@@ -5,6 +5,7 @@ SRC_DIR = src
 BUILD_DIR = build
 OBJS = \
 	$(BUILD_DIR)/main.o \
+	$(BUILD_DIR)/error.o \
 	$(BUILD_DIR)/context.o \
 	$(BUILD_DIR)/memory.o \
 	$(BUILD_DIR)/read.o \
@@ -18,6 +19,9 @@ $(TAR) : $(OBJS)
 	$(CC) -o $@ $^ $(LDLIBS)
 
 $(BUILD_DIR)/main.o : $(SRC_DIR)/main.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/error.o : $(SRC_DIR)/error.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/context.o : $(SRC_DIR)/context.c

@@ -20,7 +20,8 @@ lcontext_t *new_rootContext(int argc, char **argv)
 	/* for file */
 	if(argc == 2) {
 		if((ctx->fp = fopen(argv[1], "r")) == NULL) {
-			// print file open error.
+			lstrerr(FILE_OPEN_ERROR);
+			exit(1);
 		}
 	}
 

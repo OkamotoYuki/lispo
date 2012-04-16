@@ -27,7 +27,7 @@ void read(lcontext_t *ctx)
 		pos = line;
 
 		if((*(pos = skip_space(pos))) != '(' && ctx->bracketsCounter == -1) {
-			// TODO print syntax error.
+			lstrerr(SYNTAX_ERROR);
 			free(line);
 			line = NULL;
 			isFirstLine = 1;
@@ -47,13 +47,14 @@ void read(lcontext_t *ctx)
 			}
 			parser(ctx, pos, size);
 			pos += size;
+			pos = skip_space(pos);
 		}
 
 
 		free(line);
 		line = NULL;
 		if(isSyntaxError) {
-			// TODO print syntax error.
+			lstrerr(SYNTAX_ERROR);
 			isSyntaxError = 0;
 			isFirstLine = 1;
 			init_rootContext(ctx);

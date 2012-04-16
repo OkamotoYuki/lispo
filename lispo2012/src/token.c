@@ -14,6 +14,16 @@ int tokenize(char *start)
 
 	end = skip_space(end);
 
+	switch(*end) {
+		case '(':
+		case ')':
+		case '*':
+		case '/':
+			return 1;
+		default:
+			break;
+	}
+
 	while(!(*end == ' ' || *end == '\0')) {
 		end++;
 	}

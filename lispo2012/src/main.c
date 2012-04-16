@@ -3,7 +3,7 @@
 int main(int argc, char **argv)
 {
 	if(argc > 2) {
-		// TODO print arg error.
+		lstrerr(ARG_ERROR);
 		exit(1);
 	}
 

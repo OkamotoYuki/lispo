@@ -11,9 +11,16 @@
 
 
 /*========== enum ==========*/
-typedef enum cellType cellType;
+typedef enum Errno Errno;
+typedef enum CellType CellType;
 
-enum cellType {
+enum Errno {
+	ARG_ERROR,
+	FILE_OPEN_ERROR,
+	SYNTAX_ERROR
+};
+
+enum CellType {
 	EMPTY,
 	START_BRACKET,
 	NUM,
@@ -32,7 +39,7 @@ typedef struct memoryPool memoryPool_t;
 typedef struct lcontext lcontext_t;
 
 struct cons {
-	cellType type;
+	CellType type;
 	cons_t *cdr;
 	union {
 		cons_t *car;
@@ -68,6 +75,10 @@ struct lcontext {
 
 
 /*========== function ==========*/
+/* error.c */
+extern void printArgError(void);
+extern void printSyntaxError(void);
+
 /* context.c */
 extern lcontext_t *new_rootContext(int, char **);
 extern void init_rootContext(lcontext_t *);
