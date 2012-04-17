@@ -3,8 +3,6 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-#define MAX_LINE_LEN                   256
-
 void read(lcontext_t *ctx)
 {
 	int isFirstLine = 1, isSyntaxError = 0;
@@ -44,6 +42,11 @@ void read(lcontext_t *ctx)
 			if(size == END_OF_LINE) {
 				parser(ctx, pos, strlen(pos));
 				break;
+			}
+			else if(size == QUIT) {
+				free(line);
+				free_rootContext(ctx);
+				exit(0);
 			}
 			parser(ctx, pos, size);
 			pos += size;

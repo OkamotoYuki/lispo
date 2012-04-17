@@ -8,6 +8,31 @@ char *skip_space(char *start)
 	return start;
 }
 
+int isQuit(char *pos)
+{
+	if(!strncmp(pos, "bye", 3)) {
+		pos += 3;
+		pos = skip_space(pos);
+		if(*pos == ')') {
+			pos++;
+			skip_space(pos);
+			if(*pos == '\0') return TRUE;
+			else return FALSE;
+		}
+	}
+	else if(!strncmp(pos, "quit", 4)) {
+		pos += 4;
+		pos = skip_space(pos);
+		if(*pos == ')') {
+			pos++;
+			skip_space(pos);
+			if(*pos == '\0') return TRUE;
+			else return FALSE;
+		}
+	}
+	return FALSE;
+}
+
 int tokenize(char *start)
 {
 	char *end = start;
@@ -16,6 +41,9 @@ int tokenize(char *start)
 
 	switch(*end) {
 		case '(':
+			end++;
+			end = skip_space(end);
+			if(isQuit(end)) return QUIT;
 		case ')':
 		case '*':
 		case '/':
@@ -24,7 +52,7 @@ int tokenize(char *start)
 			break;
 	}
 
-	while(!(*end == ' ' || *end == '\0')) {
+	while(!(*end == ' ' || *end == ')' || *end == '\0')) {
 		end++;
 	}
 	if(*end == '\0') return END_OF_LINE;

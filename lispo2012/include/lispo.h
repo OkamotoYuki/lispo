@@ -6,13 +6,14 @@
 #define TRUE                           1
 #define FALSE                          0
 
+#define MAX_LINE_LEN                   256
 #define END_OF_LINE                    -1
-
+#define QUIT                           -2
 
 
 /*========== enum ==========*/
 typedef enum Errno Errno;
-typedef enum CellType CellType;
+typedef enum ObjectType ObjectType;
 
 enum Errno {
 	ARG_ERROR,
@@ -20,26 +21,34 @@ enum Errno {
 	SYNTAX_ERROR
 };
 
-enum CellType {
-	EMPTY,
-	START_BRACKET,
-	NUM,
+enum ObjectType {
+	T_EMPTY,
+	T_START_BRACKET,
+	T_NUM,
+	T_ADD,
+	T_SUB,
+	T_MUL,
+	T_DIV,
+	T_STRING,
+	T_IF,
+	T_SETQ,
+	T_DEFUN,
+	PUSH,
+	POP,
 	ADD,
-	SUB,
-	MUL,
-	DIV
+	SUB
 };
-
-
 
 /*========== struct ==========*/
 typedef struct cons cons_t;
+typedef struct vmCode vmCode_t;
+typedef struct lObject lObject;
 typedef struct memoryArena memoryArena_t;
 typedef struct memoryPool memoryPool_t;
 typedef struct lcontext lcontext_t;
 
 struct cons {
-	CellType type;
+	ObjectType type;
 	cons_t *cdr;
 	union {
 		cons_t *car;
@@ -48,9 +57,23 @@ struct cons {
 	};
 };
 
+struct vmCode {
+	ObjectType type;
+};
+
+struct lObject {
+	ObjectType type;
+	lObject *cdr;
+	union {
+		lObject *car;
+		int ivalue;
+		char *svalue;
+	};
+};
+
 struct memoryPool {
 	int pos;
-	cons_t *cells;
+	lObject *objs;
 	memoryPool_t *next;
 };
 
@@ -76,8 +99,7 @@ struct lcontext {
 
 /*========== function ==========*/
 /* error.c */
-extern void printArgError(void);
-extern void printSyntaxError(void);
+extern void lstrerr(Errno errno);
 
 /* context.c */
 extern lcontext_t *new_rootContext(int, char **);
@@ -87,6 +109,7 @@ extern void free_rootContext(lcontext_t *);
 /* memory.c */
 extern memoryArena_t *new_memoryArena(void);
 extern cons_t *allocate_consCell(lcontext_t *ctx);
+extern char *allocate_string(lcontext_t *ctx, int size);
 
 /* read.c */
 extern void read(lcontext_t *);

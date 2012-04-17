@@ -1,12 +1,12 @@
 #include "lispo.h"
 
-//#define DEFAULT_NUMBER_OF_CELLS        1024
-#define DEFAULT_NUMBER_OF_CELLS        5
+#define DEFAULT_NUMBER_OF_CELLS        1024
+//#define DEFAULT_NUMBER_OF_CELLS        5
 
 static memoryPool_t *init_memoryPool(memoryPool_t *pool)
 {
 	pool->pos = 0;
-	pool->cells = (cons_t *)malloc(sizeof(cons_t) * DEFAULT_NUMBER_OF_CELLS);
+	pool->objs = (lObject *)malloc(sizeof(lObject) * DEFAULT_NUMBER_OF_CELLS);
 	pool->next = NULL;
 	return pool;
 }
@@ -21,27 +21,27 @@ memoryArena_t *new_memoryArena(void)
 	return arena;
 }
 
-static cons_t *copy_cell(lcontext_t *ctx, cons_t *head)
+static lObject *copy_lObject(lcontext_t *ctx, lObject *head)
 {
 	if(!head) return NULL;
 
-	cons_t *from = head;
+	lObject *from = head;
 	memoryArena_t *arena = ctx->memoryArena;
 	memoryPool_t *pool = &(arena->pool[!arena->whichPool]);
-	cons_t *to = &(pool->cells[pool->pos]);
-	memcpy(to, from, sizeof(cons_t));
+	lObject *to = &(pool->objs[pool->pos]);
+	memcpy(to, from, sizeof(lObject));
 	pool->pos++;
 
-	if(from->type == START_BRACKET) to->car = copy_cell(ctx, from->car);
-	to->cdr = copy_cell(ctx, from->cdr);
+	if(from->type == T_START_BRACKET) to->car = copy_lObject(ctx, from->car);
+	to->cdr = copy_lObject(ctx, from->cdr);
 	return to;
 }
 
 static memoryPool_t *gc(lcontext_t *ctx)
 {
-	cons_t *head = ctx->cellRoot;
+	lObject *head = (lObject *)ctx->cellRoot;
 	memoryArena_t *arena = ctx->memoryArena;
-	head = copy_cell(ctx, head);
+	head = copy_lObject(ctx, head);
 	memoryPool_t *fromPool = &(arena->pool[arena->whichPool]);
 	while(1) {
 		fromPool->pos = 0;
@@ -52,15 +52,15 @@ static memoryPool_t *gc(lcontext_t *ctx)
 	return &(arena->pool[arena->whichPool]);
 }
 
-static void init_cell(cons_t *cell)
+static void init_lObject(lObject *o)
 {
-	cell->type = EMPTY;
-	cell->cdr = NULL;
+	o->type = T_EMPTY;
+	o->cdr = NULL;
 }
 
-cons_t *allocate_consCell(lcontext_t *ctx)
+static lObject *allocate_lObject(lcontext_t *ctx)
 {
-	cons_t *cell;
+	lObject *o;
 	memoryArena_t *arena = ctx->memoryArena;
 	memoryPool_t *pool = &(arena->pool[arena->whichPool]);
 	int pos = pool->pos;
@@ -75,8 +75,25 @@ cons_t *allocate_consCell(lcontext_t *ctx)
 		pos = pool->pos;
 	}
 
-	cell = &(pool->cells[pos]);
-	init_cell(cell);
+	o = &(pool->objs[pos]);
+	init_lObject(o);
 	pool->pos++;
-	return cell;
+	return o;
+}
+
+cons_t *allocate_consCell(lcontext_t *ctx)
+{
+	return (cons_t *)allocate_lObject(ctx);
+}
+
+char *allocate_string(lcontext_t *ctx, int size)
+{
+	int i;
+	int num = (size / sizeof(lObject)) + 1;
+	char *str = (char *)allocate_lObject(ctx);
+
+	for(i = 0; i < num - 1; i++) {
+		allocate_lObject(ctx);
+	}
+	return str;
 }
