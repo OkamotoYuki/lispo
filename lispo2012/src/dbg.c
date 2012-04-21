@@ -26,6 +26,11 @@ void print_consTree(cons_t *head)
 			print_consTree(head->car);
 			print_consTree(head->cdr);
 			return;
+		case O_NUM:
+			print_tab();
+			printf("%d\n", head->ivalue);
+			print_consTree(head->cdr);
+			return;
 		case O_ADD:
 			print_tab();
 			printf("+\n");
@@ -46,9 +51,14 @@ void print_consTree(cons_t *head)
 			printf("/\n");
 			print_consTree(head->cdr);
 			return;
-		case O_NUM:
+		case O_LT:
 			print_tab();
-			printf("%d\n", head->ivalue);
+			printf("<\n");
+			print_consTree(head->cdr);
+			return;
+		case O_GT:
+			print_tab();
+			printf(">\n");
 			print_consTree(head->cdr);
 			return;
 		case O_IF:
@@ -76,32 +86,40 @@ void print_consTree(cons_t *head)
 	}
 }
 
-void print_VMCode(VMCode *start)
+void print_VMCode(VMCode *code)
 {
-	switch(start->otype) {
+	switch(code->otype) {
 		case O_OpPUSH:
 			printf("PUSH->");
-			print_VMCode(start->next);
+			print_VMCode(code->next);
 			return;
 		case O_OpPOP:
 			printf("POP->");
-			print_VMCode(start->next);
+			print_VMCode(code->next);
 			return;
 		case O_OpADD:
 			printf("ADD->");
-			print_VMCode(start->next);
+			print_VMCode(code->next);
 			return;
 		case O_OpSUB:
-			printf("ADD->");
-			print_VMCode(start->next);
+			printf("SUB->");
+			print_VMCode(code->next);
 			return;
 		case O_OpMUL:
-			printf("ADD->");
-			print_VMCode(start->next);
+			printf("MUL->");
+			print_VMCode(code->next);
 			return;
 		case O_OpDIV:
-			printf("ADD->");
-			print_VMCode(start->next);
+			printf("DIV->");
+			print_VMCode(code->next);
+			return;
+		case O_OpLT:
+			printf("LT->");
+			print_VMCode(code->next);
+			return;
+		case O_OpGT:
+			printf("GT->");
+			print_VMCode(code->next);
 			return;
 		case O_OpEND:
 			printf("END\n");

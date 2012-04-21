@@ -67,9 +67,15 @@ int parse(lcontext_t *ctx, char *pos, int size)
 				TREE_HEAD->otype = O_DIV;
 				return T;
 			case '<':
-				break;
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_LT;
+				return T;
 			case '>':
-				break;
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_GT;
+				return T;
 			case '=':
 				break;
 			default:

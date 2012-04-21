@@ -8,6 +8,12 @@
 	DATA_STACK(pos).value = (i);\
 } while(0)
 
+#define PUSH_BOOL(b) do {\
+	pos++;\
+	DATA_STACK(pos).dtype = D_BOOL;\
+	DATA_STACK(pos).value = (b);\
+} while(0)
+
 #define POP_INT(i) do {\
 	i = DATA_STACK(pos).value;\
 	pos--;\
@@ -18,8 +24,8 @@ data_t *run_VM(lcontext_t *ctx)
 	static void *VMOpTable[] = {
 		&&OpPUSH, &&OpPOP,
 		&&OpADD, &&OpSUB, &&OpMUL, &&OpDIV,
-		&&OpCMP,
 		&&OpLT, &&OpGT,
+		&&OpCMP,
 		&&OpCALL, &&OpRET,
 		&&OpEND
 	};
@@ -70,11 +76,21 @@ OpDIV:
 	code = code->next;
 	goto *code->VMOp;
 
-OpCMP:
-
 OpLT:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_BOOL((r2 < r1)? T : NIL);
+	code = code->next;
+	goto *code->VMOp;
 
 OpGT:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_BOOL((r2 > r1)? T : NIL);
+	code = code->next;
+	goto *code->VMOp;
+
+OpCMP:
 
 OpCALL:
 

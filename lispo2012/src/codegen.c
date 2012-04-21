@@ -72,6 +72,26 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(DIV);
 			}
 			return;
+		case O_LT:
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			HEAD_OF_VM_CODE->next = new_VMCode(ctx);
+			HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+			HEAD_OF_VM_CODE->otype = O_OpLT;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LT);
+			return;
+		case O_GT:
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			HEAD_OF_VM_CODE->next = new_VMCode(ctx);
+			HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+			HEAD_OF_VM_CODE->otype = O_OpGT;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(GT);
+			return;
 	}
 }
 
