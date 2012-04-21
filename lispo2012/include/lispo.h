@@ -194,6 +194,9 @@ extern void compile(lcontext_t *);
 extern data_t *run_VM(lcontext_t *);
 extern void init_VMOpTable(lcontext_t *);
 
+/* print.c */
+extern void print_result(data_t *);
+
 /* dbg.c */
 extern void print_consTree(cons_t *);
 extern void print_VMCode(VMCode *);
