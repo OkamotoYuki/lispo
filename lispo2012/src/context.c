@@ -1,6 +1,7 @@
 #include "lispo.h"
 
 #define MAX_NUMBER_OF_BRACKETS_PAIR    64
+#define DATA_STACK_SIZE 256
 
 void init_rootContext(lcontext_t *ctx)
 {
@@ -8,9 +9,13 @@ void init_rootContext(lcontext_t *ctx)
 	ctx->bracketsCounter = -1;
 
 	/* for parser */
-	ctx->cellRoot = NULL;
-	ctx->cellHead = NULL;
+	ctx->treeRoot = NULL;
+	ctx->treeHead = NULL;
 	ctx->startBracketCellsPtrStackPos = -1;
+
+	/* for code generator */
+	ctx->startOfVMCode = NULL;
+	ctx->headOfVMCode = NULL;
 }
 
 lcontext_t *new_rootContext(int argc, char **argv)
@@ -30,6 +35,12 @@ lcontext_t *new_rootContext(int argc, char **argv)
 
 	/* for parser */
 	ctx->startBracketCellsPtrStack = (cons_t **)malloc(sizeof(cons_t *) * MAX_NUMBER_OF_BRACKETS_PAIR);
+
+	/* for code generator */
+	init_VMOpTable(ctx);
+
+	/* for run VM */
+	ctx->dataStack = (data_t *)malloc((sizeof(data_t)) * DATA_STACK_SIZE);
 
 	init_rootContext(ctx);
 

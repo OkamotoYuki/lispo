@@ -40,7 +40,7 @@ void read(lcontext_t *ctx)
 			}
 			size = tokenize(pos);
 			if(size == END_OF_LINE) {
-				parser(ctx, pos, strlen(pos));
+				parse(ctx, pos, strlen(pos));
 				break;
 			}
 			else if(size == QUIT) {
@@ -48,7 +48,7 @@ void read(lcontext_t *ctx)
 				free_rootContext(ctx);
 				exit(0);
 			}
-			parser(ctx, pos, size);
+			parse(ctx, pos, size);
 			pos += size;
 			pos = skip_space(pos);
 		}

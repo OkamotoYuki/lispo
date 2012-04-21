@@ -32,17 +32,17 @@ static lObject *copy_lObject(lcontext_t *ctx, lObject *head)
 	memcpy(to, from, sizeof(lObject));
 	pool->pos++;
 
-	if(from->type == T_START_BRACKET) to->car = copy_lObject(ctx, from->car);
+	if(from->otype == O_START_BRACKET) to->car = copy_lObject(ctx, from->car);
 	to->cdr = copy_lObject(ctx, from->cdr);
 	return to;
 }
 
 static memoryPool_t *gc(lcontext_t *ctx)
 {
-	lObject *head = (lObject *)ctx->cellRoot;
 	memoryArena_t *arena = ctx->memoryArena;
-	head = copy_lObject(ctx, head);
+	TREE_ROOT = (cons_t *)copy_lObject(ctx, (lObject *)TREE_ROOT);
 	memoryPool_t *fromPool = &(arena->pool[arena->whichPool]);
+
 	while(1) {
 		fromPool->pos = 0;
 		if(fromPool->next) fromPool = fromPool->next;
@@ -54,11 +54,12 @@ static memoryPool_t *gc(lcontext_t *ctx)
 
 static void init_lObject(lObject *o)
 {
-	o->type = T_EMPTY;
+	if(o->otype == O_STRING) free(o->svalue);
+	o->otype = O_EMPTY;
 	o->cdr = NULL;
 }
 
-static lObject *allocate_lObject(lcontext_t *ctx)
+static lObject *new_lObject(lcontext_t *ctx)
 {
 	lObject *o;
 	memoryArena_t *arena = ctx->memoryArena;
@@ -81,19 +82,24 @@ static lObject *allocate_lObject(lcontext_t *ctx)
 	return o;
 }
 
-cons_t *allocate_consCell(lcontext_t *ctx)
+cons_t *new_consCell(lcontext_t *ctx)
 {
-	return (cons_t *)allocate_lObject(ctx);
+	return (cons_t *)new_lObject(ctx);
 }
 
-char *allocate_string(lcontext_t *ctx, int size)
-{
-	int i;
-	int num = (size / sizeof(lObject)) + 1;
-	char *str = (char *)allocate_lObject(ctx);
+//char *new_string(lcontext_t *ctx, int size)
+//{
+//	int i;
+//	int num = (size / sizeof(lObject)) + 1;
+//	char *str = (char *)new_lObject(ctx);
+//
+//	for(i = 0; i < num - 1; i++) {
+//		new_lObject(ctx);
+//	}
+//	return str;
+//}
 
-	for(i = 0; i < num - 1; i++) {
-		allocate_lObject(ctx);
-	}
-	return str;
+VMCode *new_VMCode(lcontext_t *ctx)
+{
+	return (VMCode *)new_lObject(ctx);
 }

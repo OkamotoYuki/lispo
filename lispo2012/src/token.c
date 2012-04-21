@@ -16,8 +16,8 @@ int isQuit(char *pos)
 		if(*pos == ')') {
 			pos++;
 			skip_space(pos);
-			if(*pos == '\0') return TRUE;
-			else return FALSE;
+			if(*pos == '\0') return T;
+			else return NIL;
 		}
 	}
 	else if(!strncmp(pos, "quit", 4)) {
@@ -26,11 +26,11 @@ int isQuit(char *pos)
 		if(*pos == ')') {
 			pos++;
 			skip_space(pos);
-			if(*pos == '\0') return TRUE;
-			else return FALSE;
+			if(*pos == '\0') return T;
+			else return NIL;
 		}
 	}
-	return FALSE;
+	return NIL;
 }
 
 int tokenize(char *start)

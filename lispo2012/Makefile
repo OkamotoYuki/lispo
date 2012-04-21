@@ -10,7 +10,11 @@ OBJS = \
 	$(BUILD_DIR)/memory.o \
 	$(BUILD_DIR)/read.o \
 	$(BUILD_DIR)/token.o \
-	$(BUILD_DIR)/parser.o
+	$(BUILD_DIR)/parser.o \
+	$(BUILD_DIR)/codegen.o \
+	$(BUILD_DIR)/run.o \
+	$(BUILD_DIR)/print.o \
+	$(BUILD_DIR)/dbg.o
 TAR = $(BUILD_DIR)/lispo
 
 all : $(TAR)
@@ -37,6 +41,18 @@ $(BUILD_DIR)/token.o : $(SRC_DIR)/token.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/parser.o : $(SRC_DIR)/parser.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/codegen.o : $(SRC_DIR)/codegen.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/run.o : $(SRC_DIR)/run.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/dbg.o : $(SRC_DIR)/dbg.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/print.o : $(SRC_DIR)/print.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 ./PHONY : clean

@@ -2,72 +2,70 @@
 
 #include "lispo.h"
 
+#define SB_PTR_STACK           ctx->startBracketCellsPtrStack
+#define SB_PTR_STACK_POS       ctx->startBracketCellsPtrStackPos
+
 #define push_startBracketCellPtr(H) do {\
-	ctx->startBracketCellsPtrStackPos++;\
-	ctx->startBracketCellsPtrStack[ctx->startBracketCellsPtrStackPos] = H;\
+	SB_PTR_STACK_POS++;\
+	SB_PTR_STACK[SB_PTR_STACK_POS] = H;\
 } while(0)
 
 #define pop_startBracketCellPtr(H) do {\
-	H = ctx->startBracketCellsPtrStack[ctx->startBracketCellsPtrStackPos];\
-	ctx->startBracketCellsPtrStack[ctx->startBracketCellsPtrStackPos] = NULL;\
-	ctx->startBracketCellsPtrStackPos--;\
+	H = SB_PTR_STACK[SB_PTR_STACK_POS];\
+	SB_PTR_STACK[SB_PTR_STACK_POS] = NULL;\
+	SB_PTR_STACK_POS--;\
 } while(0)
 
-int parser(lcontext_t *ctx, char *pos, int size)
+int parse(lcontext_t *ctx, char *pos, int size)
 {
 	char c = *pos;
 	char str[MAX_LINE_LEN];
 	char *e;
 	int ival;
-	cons_t *head = ctx->cellHead;
-	cons_t *cell;
 
 	if(c == ')') {
-		head->cdr = NULL;
-		pop_startBracketCellPtr(head);
+		TREE_HEAD->cdr = NULL;
+		pop_startBracketCellPtr(TREE_HEAD);
 		ctx->bracketsCounter--;
-		return TRUE;
+		return T;
 	}
-
-//	cell = (cons_t *)malloc(sizeof(cons_t));
-	cell = allocate_consCell(ctx);
 
 	if(size == 1) {
 		switch(c) {
 			case '(':
-				cell->type = T_START_BRACKET;
-				if(!head) {
-					ctx->cellHead = cell;
-					head = cell;
+				if(!TREE_HEAD) {
+					TREE_ROOT = new_consCell(ctx);
+					TREE_HEAD = TREE_ROOT;
 				}
 				else {
-					head->cdr = cell;
-					head = cell;
+					TREE_HEAD->cdr = new_consCell(ctx);
+					TREE_HEAD = TREE_HEAD->cdr;
 				}
-				push_startBracketCellPtr(head);
+				TREE_HEAD->otype = O_START_BRACKET;
+				push_startBracketCellPtr(TREE_HEAD);
 				if(ctx->bracketsCounter == -1) ctx->bracketsCounter += 2;
 				else ctx->bracketsCounter++;
-				return TRUE;
+				return T;
 			case '+':
-				cell->type = T_ADD;
-				head->car == cell;
-				head = cell;
-				return TRUE;
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_ADD;
+				return T;
 			case '-':
-				cell->type = T_SUB;
-				head->car == cell;
-				head = cell;
-				return TRUE;
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_SUB;
+				return T;
 			case '*':
-				cell->type = T_MUL;
-				head->car = cell;
-				head = cell;
-				return TRUE;
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_MUL;
+				return T;
 			case '/':
-				cell->type = T_DIV;
-				head->car = cell;
-				head = cell;
-				return TRUE;
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_DIV;
+				return T;
 			case '<':
 				break;
 			case '>':
@@ -75,52 +73,56 @@ int parser(lcontext_t *ctx, char *pos, int size)
 			case '=':
 				break;
 			default:
-				return FALSE;
+				break;
 		}
 	}
-	else {
-		strncpy(str, pos, size);
-		switch(c) {
-			case '-':
+
+	memcpy(str, pos, size);
+	str[size] = '\0';
+
+	switch(c) {
+		case '-':
+			ival = (int)strtol(str, &e, 10);
+			if(*e != '\0') return NIL;
+			TREE_HEAD->cdr = new_consCell(ctx);
+			TREE_HEAD = TREE_HEAD->cdr;
+			TREE_HEAD->otype = O_NUM;
+			TREE_HEAD->ivalue = ival;
+			return T;
+		default:
+			if(isdigit(c)) {
 				ival = (int)strtol(str, &e, 10);
-				if(*e != '\0') FALSE;
-				cell->type = T_NUM;
-				cell->ivalue = ival;
-				head->cdr = cell;
-				head = cell;
-				return TRUE;
-			default:
-				if(isdigit(c)) {
-					ival = (int)strtol(str, &e, 10);
-					if(*e != '\0') FALSE;
-					cell->type = T_NUM;
-					cell->ivalue = ival;
-					head->cdr = cell;
-					head = cell;
-					return TRUE;
-				}
-				else if(size == 2 && !strncmp(str, "if", 2)) {
-					cell->type = T_IF;
-					head->car = cell;
-					head = cell;
-					return TRUE;
-				}
-				else if(size == 4 && !strncmp(str, "setq", 4)) {
-					cell->type = T_SETQ;
-					head->car = cell;
-					head = cell;
-					return TRUE;
-				}
-				else if(size == 5 && !strncmp(str, "defun", 5)) {
-					cell->type = T_DEFUN;
-					head->car = cell;
-					head = cell;
-					return TRUE;
-				}
-				cell->type = T_STRING;
-				cell->svalue = allocate_string(ctx, size);
-				strncpy(cell->svalue, pos, size);
-				return TRUE;
-		}
+				if(*e != '\0') return NIL;
+				TREE_HEAD->cdr = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->cdr;
+				TREE_HEAD->otype = O_NUM;
+				TREE_HEAD->ivalue = ival;
+				return T;
+			}
+			else if(size == 2 && !strncmp(str, "if", 2)) {
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_IF;
+				return T;
+			}
+			else if(size == 4 && !strncmp(str, "setq", 4)) {
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_SETQ;
+				return T;
+			}
+			else if(size == 5 && !strncmp(str, "defun", 5)) {
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_DEFUN;
+				return T;
+			}
+			TREE_HEAD->cdr = new_consCell(ctx);
+			TREE_HEAD = TREE_HEAD->cdr;
+			TREE_HEAD->otype = O_STRING;
+			TREE_HEAD->svalue = (char *)malloc(size + 1);
+			memcpy(TREE_HEAD->svalue, pos, size);
+			TREE_HEAD->svalue[size] = '\0';
+			return T;
 	}
 }
