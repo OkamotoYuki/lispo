@@ -91,6 +91,18 @@ void print_VMCode(VMCode *start)
 			printf("ADD->");
 			print_VMCode(start->next);
 			return;
+		case O_OpSUB:
+			printf("ADD->");
+			print_VMCode(start->next);
+			return;
+		case O_OpMUL:
+			printf("ADD->");
+			print_VMCode(start->next);
+			return;
+		case O_OpDIV:
+			printf("ADD->");
+			print_VMCode(start->next);
+			return;
 		case O_OpEND:
 			printf("END\n");
 			return;

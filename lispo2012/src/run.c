@@ -50,10 +50,25 @@ OpADD:
 	goto *code->VMOp;
 
 OpSUB:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_INT(r1 - r2);
+	code = code->next;
+	goto *code->VMOp;
 
 OpMUL:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_INT(r1 * r2);
+	code = code->next;
+	goto *code->VMOp;
 
 OpDIV:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_INT(r1 / r2);
+	code = code->next;
+	goto *code->VMOp;
 
 OpCMP:
 

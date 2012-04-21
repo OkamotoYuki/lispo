@@ -35,6 +35,43 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 				HEAD_OF_VM_CODE->otype = O_OpADD;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(ADD);
 			}
+			return;
+		case O_SUB:
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			while(cell->cdr) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+				HEAD_OF_VM_CODE->next = new_VMCode(ctx);
+				HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+				HEAD_OF_VM_CODE->otype = O_OpSUB;
+				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(SUB);
+			}
+			return;
+		case O_MUL:
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			while(cell->cdr) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+				HEAD_OF_VM_CODE->next = new_VMCode(ctx);
+				HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+				HEAD_OF_VM_CODE->otype = O_OpMUL;
+				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(MUL);
+			}
+			return;
+		case O_DIV:
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			while(cell->cdr) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+				HEAD_OF_VM_CODE->next = new_VMCode(ctx);
+				HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+				HEAD_OF_VM_CODE->otype = O_OpDIV;
+				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(DIV);
+			}
+			return;
 	}
 }
 
