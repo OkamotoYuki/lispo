@@ -19,6 +19,11 @@
 	pos--;\
 } while(0)
 
+#define POP_BOOL(b) do {\
+	b = DATA_STACK(pos).value;\
+	pos--;\
+} while(0)
+
 data_t *run_VM(lcontext_t *ctx)
 {
 	static void *VMOpTable[] = {
@@ -36,7 +41,7 @@ data_t *run_VM(lcontext_t *ctx)
 	}
 
 	int pos = -1;
-	int r1, r2;
+	register int r1, r2, r3;
 	VMCode *code = START_OF_VM_CODE;
 
 	goto *code->VMOp;
@@ -91,6 +96,12 @@ OpGT:
 	goto *code->VMOp;
 
 OpCMP:
+	POP_INT(r1);
+	POP_INT(r2);
+	POP_BOOL(r3);
+	PUSH_INT(r3? r2 : r1);
+	code = code->next;
+	goto *code->VMOp;
 
 OpCALL:
 

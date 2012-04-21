@@ -76,8 +76,6 @@ int parse(lcontext_t *ctx, char *pos, int size)
 				TREE_HEAD = TREE_HEAD->car;
 				TREE_HEAD->otype = O_GT;
 				return T;
-			case '=':
-				break;
 			default:
 				break;
 		}

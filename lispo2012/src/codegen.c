@@ -6,6 +6,8 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 {
 	if(!cell) return;
 
+	int i = 0;
+
 	switch(cell->otype) {
 		case O_START_BRACKET:
 			generate_VMCode(ctx, cell->car);
@@ -73,24 +75,34 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			}
 			return;
 		case O_LT:
-			cell = cell->cdr;
-			generate_VMCode(ctx, cell);
-			cell = cell->cdr;
-			generate_VMCode(ctx, cell);
+			for(; i < 2; i++) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+			}
 			HEAD_OF_VM_CODE->next = new_VMCode(ctx);
 			HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
 			HEAD_OF_VM_CODE->otype = O_OpLT;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LT);
 			return;
 		case O_GT:
-			cell = cell->cdr;
-			generate_VMCode(ctx, cell);
-			cell = cell->cdr;
-			generate_VMCode(ctx, cell);
+			for(; i < 2; i++) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+			}
 			HEAD_OF_VM_CODE->next = new_VMCode(ctx);
 			HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
 			HEAD_OF_VM_CODE->otype = O_OpGT;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(GT);
+			return;
+		case O_IF:
+			for(; i < 3; i++) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+			}
+			HEAD_OF_VM_CODE->next = new_VMCode(ctx);
+			HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+			HEAD_OF_VM_CODE->otype = O_OpCMP;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CMP);
 			return;
 	}
 }

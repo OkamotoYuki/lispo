@@ -121,6 +121,10 @@ void print_VMCode(VMCode *code)
 			printf("GT->");
 			print_VMCode(code->next);
 			return;
+		case O_OpCMP:
+			printf("CMP->");
+			print_VMCode(code->next);
+			return;
 		case O_OpEND:
 			printf("END\n");
 			return;
