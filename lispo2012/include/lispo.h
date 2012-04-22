@@ -10,6 +10,8 @@
 #define END_OF_LINE                    -1
 #define QUIT                           -2
 
+#define MAX_NUMBER_OF_ALPHABET         26
+
 #define TREE_ROOT                      ctx->treeRoot
 #define TREE_HEAD                      ctx->treeHead
 
@@ -89,6 +91,7 @@ typedef struct VMCode VMCode;
 typedef struct lObject lObject;
 typedef struct memoryArena memoryArena_t;
 typedef struct memoryPool memoryPool_t;
+typedef struct hashTable hashTable_t;
 typedef struct data data_t;
 typedef struct lcontext lcontext_t;
 
@@ -138,6 +141,13 @@ struct memoryArena {
 	int whichPool;
 };
 
+struct hashTable {
+	char *name;
+	int ivalue;
+	VMCode *func;
+	hashTable_t *next;
+};
+
 struct data {
 	DataType dtype;
 	int value;
@@ -147,6 +157,8 @@ struct lcontext {
 	FILE *fp; // for lisp file
 
 	memoryArena_t *memoryArena; // for memory managiment
+
+	hashTable_t **hashTable; // for hash table
 
 	int bracketsCounter; // for counting brackets
 
@@ -178,6 +190,10 @@ extern memoryArena_t *new_memoryArena(void);
 extern cons_t *new_consCell(lcontext_t *);
 //extern char *new_string(lcontext_t *, int);
 extern VMCode *new_VMCode(lcontext_t *);
+
+/* hash.c */
+extern hashTable_t *search_hashTable(lcontext_t *, char *);
+extern int add_hashTable(lcontext_t *, char *str);
 
 /* read.c */
 extern void read(lcontext_t *);

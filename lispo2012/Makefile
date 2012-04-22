@@ -7,6 +7,7 @@ OBJS = \
 	$(BUILD_DIR)/main.o \
 	$(BUILD_DIR)/error.o \
 	$(BUILD_DIR)/context.o \
+	$(BUILD_DIR)/hash.o \
 	$(BUILD_DIR)/memory.o \
 	$(BUILD_DIR)/read.o \
 	$(BUILD_DIR)/token.o \
@@ -29,6 +30,9 @@ $(BUILD_DIR)/error.o : $(SRC_DIR)/error.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/context.o : $(SRC_DIR)/context.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(BUILD_DIR)/hash.o : $(SRC_DIR)/hash.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 $(BUILD_DIR)/memory.o : $(SRC_DIR)/memory.c

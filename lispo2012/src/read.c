@@ -12,7 +12,12 @@ void read(lcontext_t *ctx)
 	while(1) {
 		if(ctx->fp) {
 			line = (char *)malloc(MAX_LINE_LEN);
-			fgets(line, MAX_LINE_LEN, ctx->fp);
+			if(!fgets(line, MAX_LINE_LEN, ctx->fp))
+			{
+				free(line);
+				free_rootContext(ctx);
+				exit(0);
+			}
 		}
 		else {
 			if(isFirstLine) {
@@ -33,7 +38,7 @@ void read(lcontext_t *ctx)
 			continue;
 		}
 
-		while(*pos != '\0') {
+		while(*pos != ('\0'|'\n') ) {
 			if(!ctx->bracketsCounter) {
 				isSyntaxError = 1;
 				break;
