@@ -24,6 +24,7 @@
 typedef enum Errno Errno;
 typedef enum ObjectType ObjectType;
 typedef enum VMCodeType VMCodeType;
+typedef enum SymbolType SymbolType;
 typedef enum DataType DataType;
 
 enum Errno {
@@ -76,6 +77,12 @@ enum VMCodeType {
 	CALL,
 	RET,
 	END
+};
+
+enum SymbolType {
+	S_VALUE,
+	S_FUNC,
+	S_ARG,
 };
 
 enum DataType {
@@ -142,8 +149,9 @@ struct memoryArena {
 };
 
 struct hashTable {
-	char *name;
-	int ivalue;
+	SymbolType stype;
+	char *symbol;
+	int value;
 	VMCode *func;
 	hashTable_t *next;
 };
@@ -192,8 +200,9 @@ extern cons_t *new_consCell(lcontext_t *);
 extern VMCode *new_VMCode(lcontext_t *);
 
 /* hash.c */
-extern hashTable_t *search_hashTable(lcontext_t *, char *);
-extern int add_hashTable(lcontext_t *, char *str);
+extern hashTable_t *search_symbol(lcontext_t *, char *);
+extern hashTable_t *add_symbol(lcontext_t *, char *);
+extern inline void set_value(hashTable_t *, int);
 
 /* read.c */
 extern void read(lcontext_t *);

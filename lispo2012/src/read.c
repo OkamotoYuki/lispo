@@ -38,7 +38,7 @@ void read(lcontext_t *ctx)
 			continue;
 		}
 
-		while(*pos != ('\0'|'\n') ) {
+		while(*pos != ('\0'&'\n') ) {
 			if(!ctx->bracketsCounter) {
 				isSyntaxError = 1;
 				break;

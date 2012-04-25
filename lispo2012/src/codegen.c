@@ -7,6 +7,8 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 	if(!cell) return;
 
 	int i = 0;
+	char *symbol;
+	hashTable_t *table;
 
 	switch(cell->otype) {
 		case O_START_BRACKET:
@@ -103,6 +105,28 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
 			HEAD_OF_VM_CODE->otype = O_OpCMP;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CMP);
+			return;
+		case O_SETQ:
+			cell = cell->cdr;
+			symbol = cell->svalue;
+			cell = cell->cdr;
+			set_value(add_symbol(ctx, symbol), cell->ivalue);
+			generate_VMCode(ctx, cell);
+			return;
+		case O_STRING:
+			table = search_symbol(ctx, cell->svalue);
+			if(!table) return; // TODO
+			switch(table->stype) {
+				case S_VALUE:
+					cell->otype = O_NUM;
+					cell->ivalue = table->value;
+					generate_VMCode(ctx, cell);
+					break;
+				case S_FUNC:
+				case S_ARG:
+				default:
+					break;
+			}
 			return;
 	}
 }
