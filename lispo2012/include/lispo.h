@@ -87,7 +87,9 @@ enum SymbolType {
 
 enum DataType {
 	D_INT,
-	D_BOOL
+	D_BOOL,
+	D_POS,
+	D_CODE
 };
 
 
@@ -158,7 +160,11 @@ struct hashTable {
 
 struct data {
 	DataType dtype;
-	int value;
+	union {
+		int value;
+		int pos;
+		VMCode *code;
+	};
 };
 
 struct lcontext {
@@ -166,7 +172,7 @@ struct lcontext {
 
 	memoryArena_t *memoryArena; // for memory managiment
 
-	hashTable_t **hashTable; // for hash table
+	hashTable_t **symbolTable; // for hash table
 
 	int bracketsCounter; // for counting brackets
 
@@ -196,7 +202,6 @@ extern void free_rootContext(lcontext_t *);
 /* memory.c */
 extern memoryArena_t *new_memoryArena(void);
 extern cons_t *new_consCell(lcontext_t *);
-//extern char *new_string(lcontext_t *, int);
 extern VMCode *new_VMCode(lcontext_t *);
 
 /* hash.c */

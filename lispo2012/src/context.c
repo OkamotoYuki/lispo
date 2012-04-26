@@ -34,7 +34,7 @@ lcontext_t *new_rootContext(int argc, char **argv)
 	ctx->memoryArena = new_memoryArena();
 
 	/* for hash table */
-	ctx->hashTable = (hashTable_t **)malloc(sizeof(hashTable_t *) * MAX_NUMBER_OF_ALPHABET);
+	ctx->symbolTable = (hashTable_t **)malloc(sizeof(hashTable_t *) * MAX_NUMBER_OF_ALPHABET);
 
 	/* for parser */
 	ctx->startBracketCellsPtrStack = (cons_t **)malloc(sizeof(cons_t *) * MAX_NUMBER_OF_BRACKETS_PAIR);

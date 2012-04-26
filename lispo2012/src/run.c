@@ -3,25 +3,25 @@
 #define DATA_STACK(pos) ctx->dataStack[pos]
 
 #define PUSH_INT(i) do {\
-	pos++;\
-	DATA_STACK(pos).dtype = D_INT;\
-	DATA_STACK(pos).value = (i);\
+	sp++;\
+	DATA_STACK(sp).dtype = D_INT;\
+	DATA_STACK(sp).value = (i);\
 } while(0)
 
 #define PUSH_BOOL(b) do {\
-	pos++;\
-	DATA_STACK(pos).dtype = D_BOOL;\
-	DATA_STACK(pos).value = (b);\
+	sp++;\
+	DATA_STACK(sp).dtype = D_BOOL;\
+	DATA_STACK(sp).value = (b);\
 } while(0)
 
 #define POP_INT(i) do {\
-	i = DATA_STACK(pos).value;\
-	pos--;\
+	i = DATA_STACK(sp).value;\
+	sp--;\
 } while(0)
 
 #define POP_BOOL(b) do {\
-	b = DATA_STACK(pos).value;\
-	pos--;\
+	b = DATA_STACK(sp).value;\
+	sp--;\
 } while(0)
 
 data_t *run_VM(lcontext_t *ctx)
@@ -40,7 +40,7 @@ data_t *run_VM(lcontext_t *ctx)
 		return NULL;
 	}
 
-	int pos = -1;
+	int sp = -1;
 	register int r1, r2, r3;
 	VMCode *code = START_OF_VM_CODE;
 
@@ -108,7 +108,7 @@ OpCALL:
 OpRET:
 
 OpEND:
-	return &(DATA_STACK(pos));
+	return &(DATA_STACK(sp));
 }
 
 void init_VMOpTable(lcontext_t *ctx)

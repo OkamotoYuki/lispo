@@ -1,11 +1,11 @@
 #include "lispo.h"
 
-#define HASH_TABLE(hash) ctx->hashTable[hash]
+#define SYMBOL_TABLE(hash) ctx->symbolTable[hash]
 #define hash(s) (*s % MAX_NUMBER_OF_ALPHABET)
 
 hashTable_t *search_symbol(lcontext_t *ctx, char *symbol)
 {
-	hashTable_t *table = HASH_TABLE(hash(symbol));
+	hashTable_t *table = SYMBOL_TABLE(hash(symbol));
 
 	while(table) {
 		if(!strncmp(symbol, table->symbol, strlen(symbol))) return table;
@@ -18,11 +18,11 @@ hashTable_t *add_symbol(lcontext_t *ctx, char *symbol)
 {
 	int hash = hash(symbol);
 	int size = strlen(symbol);
-	hashTable_t *table = HASH_TABLE(hash);
+	hashTable_t *table = SYMBOL_TABLE(hash);
 
 	if(!table) {
-		HASH_TABLE(hash) = (hashTable_t *)malloc(sizeof(hashTable_t));
-		table = HASH_TABLE(hash);
+		SYMBOL_TABLE(hash) = (hashTable_t *)malloc(sizeof(hashTable_t));
+		table = SYMBOL_TABLE(hash);
 		table->symbol = (char *)malloc(size + 1);
 		memcpy(table->symbol, (void *)symbol, size);
 		table->symbol[size] = '\0';
