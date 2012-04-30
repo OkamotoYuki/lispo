@@ -49,6 +49,12 @@ inline void set_value(hashTable_t *table, int value)
 	table->value = value;
 }
 
+inline void set_func(hashTable_t *table, VMCode *startOfFunc)
+{
+	table->otype = O_SymFUNC;
+	table->func = startOfFunc;
+}
+
 hashTable_t *search_arg(lcontext_t *ctx, char *symbol)
 {
 	hashTable_t *table = ARG_TABLE(smallHash(symbol));

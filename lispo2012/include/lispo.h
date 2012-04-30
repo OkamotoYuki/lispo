@@ -222,6 +222,7 @@ extern hashTable_t *new_argTable(lcontext_t *);
 extern hashTable_t *search_symbol(lcontext_t *, char *);
 extern hashTable_t *add_symbol(lcontext_t *, char *);
 extern inline void set_value(hashTable_t *, int);
+extern inline void set_func(hashTable_t *, VMCode *);
 extern hashTable_t *search_arg(lcontext_t *, char *);
 extern hashTable_t *add_arg(lcontext_t *, char *);
 extern inline void set_arg(hashTable_t *, int);
