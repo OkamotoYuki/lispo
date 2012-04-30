@@ -87,19 +87,12 @@ cons_t *new_consCell(lcontext_t *ctx)
 	return (cons_t *)new_lObject(ctx);
 }
 
-//char *new_string(lcontext_t *ctx, int size)
-//{
-//	int i;
-//	int num = (size / sizeof(lObject)) + 1;
-//	char *str = (char *)new_lObject(ctx);
-//
-//	for(i = 0; i < num - 1; i++) {
-//		new_lObject(ctx);
-//	}
-//	return str;
-//}
-
 VMCode *new_VMCode(lcontext_t *ctx)
 {
 	return (VMCode *)new_lObject(ctx);
+}
+
+hashTable_t *new_argTable(lcontext_t *ctx)
+{
+	return (hashTable_t *)new_lObject(ctx);
 }

@@ -10,7 +10,8 @@
 #define END_OF_LINE                    -1
 #define QUIT                           -2
 
-#define MAX_NUMBER_OF_ALPHABET         26
+#define DEFAULT_SYMBOL_TABLE_SIZE      26
+#define DEFAULT_ARG_TABLE_SIZE         4
 
 #define TREE_ROOT                      ctx->treeRoot
 #define TREE_HEAD                      ctx->treeHead
@@ -61,7 +62,12 @@ enum ObjectType {
 	O_OpCMP,
 	O_OpCALL,
 	O_OpRET,
-	O_OpEND
+	O_OpEND,
+
+	/* symbol */
+	O_SymVAL,
+	O_SymFUNC,
+	O_SymARG
 };
 
 enum VMCodeType {
@@ -79,11 +85,11 @@ enum VMCodeType {
 	END
 };
 
-enum SymbolType {
-	S_VALUE,
-	S_FUNC,
-	S_ARG,
-};
+//enum SymbolType {
+//	S_VALUE,
+//	S_FUNC,
+//	S_ARG,
+//};
 
 enum DataType {
 	D_INT,
@@ -151,11 +157,15 @@ struct memoryArena {
 };
 
 struct hashTable {
-	SymbolType stype;
-	char *symbol;
-	int value;
-	VMCode *func;
+	ObjectType otype;
+	lObject *to; // TODO
 	hashTable_t *next;
+	char *symbol;
+	union {
+		int value;
+		VMCode *func;
+		int index;
+	};
 };
 
 struct data {
@@ -173,6 +183,7 @@ struct lcontext {
 	memoryArena_t *memoryArena; // for memory managiment
 
 	hashTable_t **symbolTable; // for symbol table
+	hashTable_t ** argTable; // for arg table
 
 	int bracketsCounter; // for counting brackets
 
@@ -205,11 +216,15 @@ extern void free_rootContext(lcontext_t *);
 extern memoryArena_t *new_memoryArena(void);
 extern cons_t *new_consCell(lcontext_t *);
 extern VMCode *new_VMCode(lcontext_t *);
+extern hashTable_t *new_argTable(lcontext_t *);
 
 /* hash.c */
 extern hashTable_t *search_symbol(lcontext_t *, char *);
 extern hashTable_t *add_symbol(lcontext_t *, char *);
 extern inline void set_value(hashTable_t *, int);
+extern hashTable_t *search_arg(lcontext_t *, char *);
+extern hashTable_t *add_arg(lcontext_t *, char *);
+extern inline void set_arg(hashTable_t *, int);
 
 /* read.c */
 extern void read(lcontext_t *);

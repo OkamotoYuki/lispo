@@ -116,14 +116,14 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 		case O_STRING:
 			table = search_symbol(ctx, cell->svalue);
 			if(!table) return; // TODO
-			switch(table->stype) {
-				case S_VALUE:
+			switch(table->otype) {
+				case O_SymVAL:
 					cell->otype = O_NUM;
 					cell->ivalue = table->value;
 					generate_VMCode(ctx, cell);
 					break;
-				case S_FUNC:
-				case S_ARG:
+				case O_SymFUNC:
+				case O_SymARG:
 				default:
 					break;
 			}
