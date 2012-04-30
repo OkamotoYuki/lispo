@@ -12,11 +12,11 @@ int main(int argc, char **argv)
 
 	while(1) {
 		read(ctx);
-		compile(ctx);
+//		compile(ctx);
 		print_consTree(TREE_ROOT);
-		print_VMCode(START_OF_VM_CODE);
-		result = run_VM(ctx);
-		print_result(result);
+//		print_VMCode(START_OF_VM_CODE);
+//		result = run_VM(ctx);
+//		print_result(result);
 		depth = 0;
 		init_rootContext(ctx);
 	}

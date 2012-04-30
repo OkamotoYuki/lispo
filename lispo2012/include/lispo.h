@@ -172,7 +172,7 @@ struct lcontext {
 
 	memoryArena_t *memoryArena; // for memory managiment
 
-	hashTable_t **symbolTable; // for hash table
+	hashTable_t **symbolTable; // for symbol table
 
 	int bracketsCounter; // for counting brackets
 
@@ -180,6 +180,8 @@ struct lcontext {
 	cons_t *treeHead;
 	cons_t **startBracketCellsPtrStack;
 	int startBracketCellsPtrStackPos;
+	int isFunc;
+	int isStartOfArg;
 
 	void **VMOpTable; // for VM
 	VMCode *startOfVMCode;

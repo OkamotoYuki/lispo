@@ -12,6 +12,8 @@ void init_rootContext(lcontext_t *ctx)
 	ctx->treeRoot = NULL;
 	ctx->treeHead = NULL;
 	ctx->startBracketCellsPtrStackPos = -1;
+	ctx->isFunc = 0;
+	ctx->isStartOfArg = 0;
 
 	/* for code generator */
 	ctx->startOfVMCode = NULL;
@@ -33,7 +35,7 @@ lcontext_t *new_rootContext(int argc, char **argv)
 	/* for memory management */
 	ctx->memoryArena = new_memoryArena();
 
-	/* for hash table */
+	/* for symbol table */
 	ctx->symbolTable = (hashTable_t **)malloc(sizeof(hashTable_t *) * MAX_NUMBER_OF_ALPHABET);
 
 	/* for parser */
