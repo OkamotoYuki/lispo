@@ -34,16 +34,49 @@ static void generate_PUSH_NUM_Code(lcontext_t *ctx, int ivalue)
 	return;
 }
 
+static void generate_VMCode(lcontext_t *ctx, cons_t *cell);
+
+static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
+{
+	int pos = -1, arg;
+	int argStack[MAX_NUM_OF_ARGS];
+	hashTable_t *table = search_symbol(ctx, cell->svalue);
+
+	if(table) {
+		switch(table->otype) {
+			case O_SymVAL:
+				cell->otype = O_NUM;
+				cell->ivalue = table->value;
+				generate_VMCode(ctx, cell);
+				break;
+			case O_SymFUNC:
+				cell = cell->cdr;
+				while(cell) {
+					push_arg(cell->ivalue);
+				}
+				while(pos >= 0) {
+					pop_arg(arg);
+					generate_PUSH_NUM_Code(ctx, arg);
+				}
+			default:
+				break;
+		}
+	}
+	else {
+		table = search_arg(ctx, cell->svalue);
+		if(table) {
+		}
+	}
+	return;
+}
+
 static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 {
 	if(!cell) return;
 
-	int i = 0, arg;
-	int pos = -1;
-	int argStack[MAX_NUM_OF_ARGS];
+	int i = 0;
 	char *symbol, *funcName;
 	cons_t *argCell;
-	hashTable_t *table;
 
 	switch(cell->otype) {
 		case O_START_BRACKET:
@@ -145,33 +178,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			set_func(add_symbol(ctx, funcName), START_OF_VM_CODE);
 			return;
 		case O_STRING:
-			table = search_symbol(ctx, cell->svalue);
-			if(table) {
-				switch(table->otype) {
-					case O_SymVAL:
-						cell->otype = O_NUM;
-						cell->ivalue = table->value;
-						generate_VMCode(ctx, cell);
-						break;
-					case O_SymFUNC:
-						cell = cell->cdr;
-						while(cell) {
-							push_arg(cell->ivalue);
-						}
-						while(pos >= 0) {
-							pop_arg(arg);
-							generate_PUSH_NUM_Code(ctx, arg);
-						}
-						
-					default:
-						break;
-				}
-			}
-			else {
-				table = search_arg(ctx, cell->svalue);
-				if(table) {
-				}
-			}
+			compile_stringCells(ctx, cell);
 			return;
 	}
 }
