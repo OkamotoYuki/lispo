@@ -125,6 +125,9 @@ void print_VMCode(VMCode *code)
 			printf("CMP->");
 			print_VMCode(code->next);
 			return;
+		case O_OpLOADA:
+			printf("LOADA->");
+			print_VMCode(code->next);
 		case O_OpEND:
 			printf("END\n");
 			return;

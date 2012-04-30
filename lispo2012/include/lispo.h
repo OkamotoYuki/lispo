@@ -60,6 +60,7 @@ enum ObjectType {
 	O_OpLT,
 	O_OpGT,
 	O_OpCMP,
+	O_OpLOADA,
 	O_OpCALL,
 	O_OpRET,
 	O_OpEND,
@@ -80,6 +81,7 @@ enum VMCodeType {
 	LT,
 	GT,
 	CMP,
+	LOADA,
 	CALL,
 	RET,
 	END

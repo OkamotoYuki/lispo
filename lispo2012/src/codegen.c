@@ -58,6 +58,9 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 					pop_arg(arg);
 					generate_PUSH_NUM_Code(ctx, arg);
 				}
+				HEAD_OF_VM_CODE = add_VMCode(ctx);
+				HEAD_OF_VM_CODE->otype = O_OpLOADA;
+				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LOADA);
 			default:
 				break;
 		}
@@ -186,8 +189,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 void compile(lcontext_t *ctx)
 {
 	generate_VMCode(ctx, TREE_ROOT);
-	HEAD_OF_VM_CODE->next = new_VMCode(ctx);
-	HEAD_OF_VM_CODE = HEAD_OF_VM_CODE->next;
+	HEAD_OF_VM_CODE = add_VMCode(ctx);
 	HEAD_OF_VM_CODE->otype = O_OpEND;
 	HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(END);
 	return;

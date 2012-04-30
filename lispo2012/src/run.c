@@ -31,7 +31,7 @@ data_t *run_VM(lcontext_t *ctx)
 		&&OpADD, &&OpSUB, &&OpMUL, &&OpDIV,
 		&&OpLT, &&OpGT,
 		&&OpCMP,
-		&&OpCALL, &&OpRET,
+		&&OpLOADA, &&OpCALL, &&OpRET,
 		&&OpEND
 	};
 
@@ -102,6 +102,8 @@ OpCMP:
 	PUSH_INT(r3? r2 : r1);
 	code = code->next;
 	goto *code->VMOp;
+
+OpLOADA:
 
 OpCALL:
 

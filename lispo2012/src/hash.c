@@ -94,6 +94,6 @@ hashTable_t *add_arg(lcontext_t *ctx, char *symbol)
 
 inline void set_arg(hashTable_t *table, int index)
 {
-	table->otype = O_SymVAL;
+	table->otype = O_SymARG;
 	table->index = index;
 }
