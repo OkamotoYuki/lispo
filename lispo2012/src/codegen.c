@@ -27,6 +27,7 @@ static void generate_PUSH_NUM_Code(lcontext_t *ctx, int ivalue)
 	else {
 		HEAD_OF_VM_CODE = add_VMCode(ctx);
 	}
+
 	HEAD_OF_VM_CODE->otype = O_OpPUSH;
 	HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(PUSH);
 	HEAD_OF_VM_CODE->dtype = D_INT;
@@ -59,10 +60,12 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 					pop_arg(arg);
 					generate_PUSH_NUM_Code(ctx, arg);
 				}
+
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpCALL;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CALL);
 				HEAD_OF_VM_CODE->jumpTo = table->func;
+
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpPOPR;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(POPR);
@@ -74,13 +77,7 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 	else {
 		table = search_arg(ctx, cell->svalue);
 		if(table) {
-			if(!HEAD_OF_VM_CODE) {
-				HEAD_OF_VM_CODE = new_VMCode(ctx);
-				START_OF_VM_CODE = HEAD_OF_VM_CODE;
-			}
-			else {
-				HEAD_OF_VM_CODE = add_VMCode(ctx);
-			}
+			HEAD_OF_VM_CODE = add_VMCode(ctx);
 			HEAD_OF_VM_CODE->otype = O_OpLOADA;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LOADA);
 			HEAD_OF_VM_CODE->index = table->index;
@@ -111,6 +108,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			while(cell->cdr) {
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
+
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpADD;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(ADD);
@@ -122,6 +120,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			while(cell->cdr) {
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
+
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpSUB;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(SUB);
@@ -133,6 +132,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			while(cell->cdr) {
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
+
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpMUL;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(MUL);
@@ -144,6 +144,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			while(cell->cdr) {
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
+
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpDIV;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(DIV);
@@ -154,6 +155,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
 			}
+
 			HEAD_OF_VM_CODE = add_VMCode(ctx);
 			HEAD_OF_VM_CODE->otype = O_OpLT;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LT);
@@ -163,6 +165,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
 			}
+
 			HEAD_OF_VM_CODE = add_VMCode(ctx);
 			HEAD_OF_VM_CODE->otype = O_OpGT;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(GT);
@@ -172,6 +175,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 				cell = cell->cdr;
 				generate_VMCode(ctx, cell);
 			}
+
 			HEAD_OF_VM_CODE = add_VMCode(ctx);
 			HEAD_OF_VM_CODE->otype = O_OpCMP;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CMP);
@@ -184,6 +188,11 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			generate_VMCode(ctx, cell);
 			return;
 		case O_DEFUN:
+			HEAD_OF_VM_CODE = new_VMCode(ctx);
+			START_OF_VM_CODE = HEAD_OF_VM_CODE;
+			HEAD_OF_VM_CODE->otype = O_OpFRAME;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(FRAME);
+
 			cell = cell->cdr;
 			funcName = cell->svalue;
 			cell = cell->cdr;
@@ -206,6 +215,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 void compile(lcontext_t *ctx)
 {
 	generate_VMCode(ctx, TREE_ROOT);
+
 	HEAD_OF_VM_CODE = add_VMCode(ctx);
 	HEAD_OF_VM_CODE->otype = O_OpRET;
 	HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(RET);
