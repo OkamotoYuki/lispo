@@ -42,6 +42,8 @@ int parse(lcontext_t *ctx, char *pos, int size)
 					TREE_HEAD = TREE_HEAD->cdr;
 				}
 				TREE_HEAD->otype = O_START_BRACKET;
+				TREE_HEAD->car = NULL;
+				TREE_HEAD->cdr = NULL;
 				push_startBracketCellPtr(TREE_HEAD);
 				if(ctx->bracketsCounter == -1) ctx->bracketsCounter += 2;
 				else ctx->bracketsCounter++;
@@ -121,7 +123,7 @@ int parse(lcontext_t *ctx, char *pos, int size)
 				TREE_HEAD->otype = O_DEFUN;
 				return T;
 			}
-			if(TREE_HEAD->otype == O_START_BRACKET) {
+			if((TREE_HEAD->otype == O_START_BRACKET) && !TREE_HEAD->car) {
 				TREE_HEAD->car = new_consCell(ctx);
 				TREE_HEAD = TREE_HEAD->car;
 			}
