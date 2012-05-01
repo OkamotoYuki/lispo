@@ -62,6 +62,11 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpCALL;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CALL);
+				HEAD_OF_VM_CODE->jumpTo = table->func;
+				HEAD_OF_VM_CODE = add_VMCode(ctx);
+				HEAD_OF_VM_CODE->otype = O_OpPOPR;
+				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(POPR);
+				HEAD_OF_VM_CODE->numOfArgs = numOfArgs;
 			default:
 				break;
 		}
@@ -69,7 +74,18 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 	else {
 		table = search_arg(ctx, cell->svalue);
 		if(table) {
+			if(!HEAD_OF_VM_CODE) {
+				HEAD_OF_VM_CODE = new_VMCode(ctx);
+				START_OF_VM_CODE = HEAD_OF_VM_CODE;
+			}
+			else {
+				HEAD_OF_VM_CODE = add_VMCode(ctx);
+			}
+			HEAD_OF_VM_CODE->otype = O_OpLOADA;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LOADA);
+			HEAD_OF_VM_CODE->index = table->index;
 		}
+		else {/* TODO */}
 	}
 	return;
 }
@@ -191,7 +207,7 @@ void compile(lcontext_t *ctx)
 {
 	generate_VMCode(ctx, TREE_ROOT);
 	HEAD_OF_VM_CODE = add_VMCode(ctx);
-	HEAD_OF_VM_CODE->otype = O_OpEND;
-	HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(END);
+	HEAD_OF_VM_CODE->otype = O_OpRET;
+	HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(RET);
 	return;
 }

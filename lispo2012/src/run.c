@@ -24,6 +24,16 @@
 	sp--;\
 } while(0)
 
+#define POP_FP(fp) do {\
+	fp = DATA_STACK(sp).fp;\
+	sp--;\
+} while(0)
+
+#define POP_CODE(code) do {\
+	code = DATA_STACK(sp).code;\
+	sp--;\
+} while(0)
+
 data_t *run_VM(lcontext_t *ctx)
 {
 	static void *VMOpTable[] = {
@@ -31,8 +41,7 @@ data_t *run_VM(lcontext_t *ctx)
 		&&OpADD, &&OpSUB, &&OpMUL, &&OpDIV,
 		&&OpLT, &&OpGT,
 		&&OpCMP,
-		&&OpLOADA, &&OpCALL, &&OpRET, &&OpPOPR,
-		&&OpEND
+		&&OpLOADA, &&OpCALL, &&OpPOPR, &&OpRET
 	};
 
 	if(!START_OF_VM_CODE) {
@@ -40,7 +49,7 @@ data_t *run_VM(lcontext_t *ctx)
 		return NULL;
 	}
 
-	int sp = -1;
+	int sp = -1, fp = -1;
 	register int r1, r2, r3;
 	VMCode *code = START_OF_VM_CODE;
 
@@ -107,12 +116,14 @@ OpLOADA:
 
 OpCALL:
 
-OpRET:
-
 OpPOPR:
 
-OpEND:
-	return &(DATA_STACK(sp));
+OpRET:
+	if(fp <= 0) return &(DATA_STACK(sp));
+	sp = fp;
+	POP_FP(fp);
+	POP_CODE(code);
+	goto *code->VMOp;
 }
 
 void init_VMOpTable(lcontext_t *ctx)

@@ -62,9 +62,8 @@ enum ObjectType {
 	O_OpCMP,
 	O_OpLOADA,
 	O_OpCALL,
-	O_OpRET,
 	O_OpPOPR,
-	O_OpEND,
+	O_OpRET,
 
 	/* symbol */
 	O_SymVAL,
@@ -84,16 +83,9 @@ enum VMCodeType {
 	CMP,
 	LOADA,
 	CALL,
-	RET,
 	POPR,
-	END
+	RET
 };
-
-//enum SymbolType {
-//	S_VALUE,
-//	S_FUNC,
-//	S_ARG,
-//};
 
 enum DataType {
 	D_INT,
@@ -132,7 +124,12 @@ struct VMCode {
 	void *VMOp;
 
 	DataType dtype;
-	int ivalue;
+	union {
+		int ivalue;
+		int index;
+		int numOfArgs;
+		VMCode *jumpTo;
+	};
 };
 
 struct lObject {
@@ -146,7 +143,7 @@ struct lObject {
 	};
 
 	char v1[4];
-	char v2[4];
+	char v2[8];
 };
 
 struct memoryPool {
@@ -167,8 +164,8 @@ struct hashTable {
 	char *symbol;
 	union {
 		int value;
-		VMCode *func;
 		int index;
+		VMCode *func;
 	};
 };
 
@@ -176,7 +173,7 @@ struct data {
 	DataType dtype;
 	union {
 		int value;
-		int pos;
+		int fp;
 		VMCode *code;
 	};
 };
