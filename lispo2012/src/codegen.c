@@ -54,6 +54,7 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 				cell = cell->cdr;
 				while(cell) {
 					push_arg(cell->ivalue);
+					cell = cell->cdr;
 				}
 				numOfArgs = pos + 1;
 				while(pos >= 0) {

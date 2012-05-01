@@ -20,10 +20,10 @@
 	DATA_STACK(sp).fp = (fp);\
 } while(0)
 
-#define PUSH_CODE(code) do {\
+#define PUSH_CODE(vmcode) do {\
 	sp++;\
 	DATA_STACK(sp).dtype = D_CODE;\
-	DATA_STACK(sp).code = (code);\
+	DATA_STACK(sp).code = (vmcode);\
 } while(0)
 
 #define POP_INT(i) do {\
