@@ -38,8 +38,9 @@ void read(lcontext_t *ctx)
 			continue;
 		}
 
-		while(*pos != ('\0'|'\n') ) {
+		while((*pos != '\0') && (*pos != '\n')) {
 			if(!ctx->bracketsCounter) {
+				printf("%c\n", *pos);
 				isSyntaxError = 1;
 				break;
 			}
@@ -57,7 +58,6 @@ void read(lcontext_t *ctx)
 			pos += size;
 			pos = skip_space(pos);
 		}
-
 
 		free(line);
 		line = NULL;

@@ -84,7 +84,7 @@ OpADD:
 OpSUB:
 	POP_INT(r1);
 	POP_INT(r2);
-	PUSH_INT(r1 - r2);
+	PUSH_INT(r2 - r1);
 	code = code->next;
 	goto *code->VMOp;
 
@@ -98,7 +98,7 @@ OpMUL:
 OpDIV:
 	POP_INT(r1);
 	POP_INT(r2);
-	PUSH_INT(r1 / r2);
+	PUSH_INT(r2 / r1);
 	code = code->next;
 	goto *code->VMOp;
 
