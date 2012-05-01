@@ -3,12 +3,12 @@
 #define MAX_NUM_OF_ARGS 64
 
 #define VM_OP_TABLE(op) ctx->VMOpTable[op]
-#define push_arg(i) do {\
+#define push_arg(arg) do {\
 	pos++;\
-	argStack[pos] = i;\
+	argCellStack[pos] = arg;\
 } while(0)
-#define pop_arg(i) do {\
-	i = argStack[pos];\
+#define pop_arg(arg) do {\
+	arg = argCellStack[pos];\
 	pos--;\
 } while(0)
 
@@ -39,8 +39,9 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell);
 
 static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 {
-	int pos = -1, arg, numOfArgs = 0;
-	int argStack[MAX_NUM_OF_ARGS];
+	int pos = -1, numOfArgs = 0;
+//	int argStack[MAX_NUM_OF_ARGS];
+	cons_t *argCellStack[MAX_NUM_OF_ARGS];
 	hashTable_t *table = search_symbol(ctx, cell->svalue);
 
 	if(table) {
@@ -53,13 +54,13 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 			case O_SymFUNC:
 				cell = cell->cdr;
 				while(cell) {
-					push_arg(cell->ivalue);
+					push_arg(cell);
 					cell = cell->cdr;
 				}
 				numOfArgs = pos + 1;
 				while(pos >= 0) {
-					pop_arg(arg);
-					generate_PUSH_NUM_Code(ctx, arg);
+					pop_arg(cell);
+					generate_VMCode(ctx, cell);
 				}
 
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
