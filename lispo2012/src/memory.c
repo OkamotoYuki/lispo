@@ -11,6 +11,17 @@ static memoryPool_t *init_memoryPool(memoryPool_t *pool)
 	return pool;
 }
 
+static void free_memoryPool(memoryPool_t *pool)
+{
+	int i;
+
+	for(i = 0; i < DEFAULT_NUMBER_OF_CELLS; i++) {
+		if(pool->objs[i].otype == O_STRING) {
+			free(pool->objs[i].svalue);
+		}
+	}
+}
+
 memoryArena_t *new_memoryArena(void)
 {
 	memoryArena_t *arena = (memoryArena_t *)malloc(sizeof(memoryPool_t));
@@ -19,6 +30,14 @@ memoryArena_t *new_memoryArena(void)
 	init_memoryPool(&(arena->pool[1]));
 	arena->whichPool = 0;
 	return arena;
+}
+
+void free_memoryArena(memoryArena_t *arena)
+{
+	free_memoryPool(&(arena->pool[0]));
+	free_memoryPool(&(arena->pool[1]));
+	free(arena->pool);
+	free(arena);
 }
 
 static lObject *copy_lObject(lcontext_t *ctx, lObject *head)

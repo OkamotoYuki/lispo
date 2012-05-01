@@ -39,7 +39,7 @@ lcontext_t *new_rootContext(int argc, char **argv)
 	/* for symbol table */
 	ctx->symbolTable = (hashTable_t **)malloc(sizeof(hashTable_t *) * DEFAULT_SYMBOL_TABLE_SIZE);
 
-	/* fot arg table */
+	/* for arg table */
 	ctx->argTable = (hashTable_t **)malloc(sizeof(hashTable_t *) * DEFAULT_ARG_TABLE_SIZE);
 
 	/* for parser */
@@ -58,4 +58,23 @@ lcontext_t *new_rootContext(int argc, char **argv)
 
 void free_rootContext(lcontext_t *ctx)
 {
+	/* for file */
+	fclose(ctx->fp);
+
+	/* for memory management */
+	free_memoryArena(ctx->memoryArena);
+
+	/* for symbol table */
+	free_symbolTable(ctx->symbolTable);
+
+	/* for arg table */
+	free(ctx->argTable);
+
+	/* for parser */
+	free(ctx->startBracketCellsPtrStack);
+
+	/* for run VM */
+	free(ctx->dataStack);
+
+	free(ctx);
 }

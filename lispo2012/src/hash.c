@@ -29,6 +29,7 @@ hashTable_t *add_symbol(lcontext_t *ctx, char *symbol)
 		table->symbol = (char *)malloc(size + 1);
 		memcpy(table->symbol, (void *)symbol, size);
 		table->symbol[size] = '\0';
+		table->next = NULL;
 		return table;
 	}
 
@@ -40,7 +41,27 @@ hashTable_t *add_symbol(lcontext_t *ctx, char *symbol)
 	table->symbol = (char *)malloc(size + 1);
 	memcpy(table->symbol, (void *)symbol, size);
 	table->symbol[size] = '\0';
+	table->next = NULL;
 	return table;
+}
+
+void free_symbolTable(hashTable_t **symbolTable)
+{
+	int i;
+	hashTable_t *table, *next;
+
+	for(i = 0; i < DEFAULT_SYMBOL_TABLE_SIZE; i++) {
+		if(symbolTable[i]) {
+			table = symbolTable[i];
+			while(table) {
+				next = table->next;
+				free(table->symbol);
+				free(table);
+				table = next;
+			}
+		}
+	}
+	free(symbolTable);
 }
 
 hashTable_t *add_func(lcontext_t *ctx, char *symbol)

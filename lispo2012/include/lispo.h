@@ -219,6 +219,7 @@ extern void free_rootContext(lcontext_t *);
 
 /* memory.c */
 extern memoryArena_t *new_memoryArena(void);
+extern void free_memoryArena(memoryArena_t *);
 extern cons_t *new_consCell(lcontext_t *);
 extern VMCode *new_VMCode(lcontext_t *);
 extern hashTable_t *new_argTable(lcontext_t *);
@@ -226,6 +227,7 @@ extern hashTable_t *new_argTable(lcontext_t *);
 /* hash.c */
 extern hashTable_t *search_symbol(lcontext_t *, char *);
 extern hashTable_t *add_symbol(lcontext_t *, char *);
+extern void free_symbolTable(hashTable_t **);
 extern hashTable_t *add_func(lcontext_t *, char *);
 extern inline void set_value(hashTable_t *, int);
 extern inline void set_func(hashTable_t *, VMCode *);
