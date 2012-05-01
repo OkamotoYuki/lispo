@@ -52,7 +52,7 @@ data_t *run_VM(lcontext_t *ctx)
 		&&OpPUSH, &&OpPOP,
 		&&OpADD, &&OpSUB, &&OpMUL, &&OpDIV,
 		&&OpLT, &&OpGT,
-		&&OpCMP,
+		&&OpCMP, &&OpJMP,
 		&&OpFRAME, &&OpLOADA, &&OpCALL, &&OpPOPR, &&OpRET
 	};
 
@@ -68,7 +68,6 @@ data_t *run_VM(lcontext_t *ctx)
 	goto *code->VMOp;
 
 OpPUSH:
-	printf("%d\n", sp);
 	PUSH_INT(code->ivalue);
 	code = code->next;
 	goto *code->VMOp;
@@ -118,10 +117,13 @@ OpGT:
 	goto *code->VMOp;
 
 OpCMP:
-	POP_INT(r1);
-	POP_INT(r2);
-	POP_BOOL(r3);
-	PUSH_INT(r3? r2 : r1);
+	POP_BOOL(r1);
+	if(r1) code = code->next;
+	else code = code->jumpTo;
+	goto *code->VMOp;
+
+OpJMP:
+	code = code->jumpTo;
 	code = code->next;
 	goto *code->VMOp;
 
@@ -138,7 +140,7 @@ OpLOADA:
 
 OpCALL:
 	PUSH_CODE(code->next);
-	code = code->jumpTo->func;
+	code = code->funcTable->func;
 	goto *code->VMOp;
 
 OpPOPR:

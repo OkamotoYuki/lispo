@@ -125,6 +125,10 @@ void print_VMCode(VMCode *code)
 			printf("CMP->");
 			print_VMCode(code->next);
 			return;
+		case O_OpJMP:
+			printf("JMP->");
+			print_VMCode(code->next);
+			return;
 		case O_OpFRAME:
 			printf("FRAME->");
 			print_VMCode(code->next);

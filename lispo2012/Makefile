@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -g3 -o0 -Wall -I./include
+#CFLAGS = -g3 -O0 -Wall -I./include
+CFLAGS = -g0 -O2 -Wall -I./include
 LDLIBS = -lreadline
 SRC_DIR = src
 BUILD_DIR = build

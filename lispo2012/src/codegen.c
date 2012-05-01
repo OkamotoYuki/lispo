@@ -65,8 +65,7 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpCALL;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CALL);
-//				HEAD_OF_VM_CODE->jumpTo = table->func;
-				HEAD_OF_VM_CODE->jumpTo = table;
+				HEAD_OF_VM_CODE->funcTable = table;
 
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpPOPR;
@@ -96,6 +95,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 	int i = 0;
 	char *symbol;
 	cons_t *argCell;
+	VMCode *codeCMP, *codeJMP, *L1, *L2, *L3;
 	hashTable_t *table;
 
 	switch(cell->otype) {
@@ -173,15 +173,37 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			HEAD_OF_VM_CODE->otype = O_OpGT;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(GT);
 			return;
+//		case O_IF:
+//			for(; i < 3; i++) {
+//				cell = cell->cdr;
+//				generate_VMCode(ctx, cell);
+//			}
+//
+//			HEAD_OF_VM_CODE = add_VMCode(ctx);
+//			HEAD_OF_VM_CODE->otype = O_OpCMP;
+//			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CMP);
+//			return;
 		case O_IF:
-			for(; i < 3; i++) {
-				cell = cell->cdr;
-				generate_VMCode(ctx, cell);
-			}
-
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
 			HEAD_OF_VM_CODE = add_VMCode(ctx);
 			HEAD_OF_VM_CODE->otype = O_OpCMP;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CMP);
+			codeCMP = HEAD_OF_VM_CODE;
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			L1 = codeCMP->next;
+			HEAD_OF_VM_CODE = add_VMCode(ctx);
+			HEAD_OF_VM_CODE->otype = O_OpJMP;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(JMP);
+			codeJMP = HEAD_OF_VM_CODE;
+			cell = cell->cdr;
+			generate_VMCode(ctx, cell);
+			L2 = codeJMP->next;
+			L3 = HEAD_OF_VM_CODE;
+			codeCMP->next = L1;
+			codeCMP->jumpTo = L2;
+			codeJMP->jumpTo = L3;
 			return;
 		case O_SETQ:
 			cell = cell->cdr;

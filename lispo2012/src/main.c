@@ -12,9 +12,9 @@ int main(int argc, char **argv)
 
 	while(1) {
 		read(ctx);
-		print_consTree(TREE_ROOT);
+//		print_consTree(TREE_ROOT);
 		compile(ctx);
-		print_VMCode(START_OF_VM_CODE);
+//		print_VMCode(START_OF_VM_CODE);
 		if(!ctx->isDefun) {
 			result = run_VM(ctx);
 			print_result(result);

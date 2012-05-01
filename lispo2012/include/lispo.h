@@ -60,6 +60,7 @@ enum ObjectType {
 	O_OpLT,
 	O_OpGT,
 	O_OpCMP,
+	O_OpJMP,
 	O_OpFRAME,
 	O_OpLOADA,
 	O_OpCALL,
@@ -82,6 +83,7 @@ enum VMCodeType {
 	LT,
 	GT,
 	CMP,
+	JMP,
 	FRAME,
 	LOADA,
 	CALL,
@@ -130,8 +132,8 @@ struct VMCode {
 		int ivalue;
 		int index;
 		int numOfArgs;
-//		VMCode *jumpTo;
-		hashTable_t *jumpTo;
+		VMCode *jumpTo;
+		hashTable_t *funcTable;
 	};
 };
 
