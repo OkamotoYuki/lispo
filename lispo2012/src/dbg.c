@@ -128,6 +128,15 @@ void print_VMCode(VMCode *code)
 		case O_OpLOADA:
 			printf("LOADA->");
 			print_VMCode(code->next);
+		case O_OpCALL:
+			printf("CALL->");
+			print_VMCode(code->next);
+		case O_OpRET:
+			printf("RET->");
+			print_VMCode(code->next);
+		case O_OpPOPR:
+			printf("POPR->");
+			print_VMCode(code->next);
 		case O_OpEND:
 			printf("END\n");
 			return;
