@@ -40,7 +40,6 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell);
 static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 {
 	int pos = -1, numOfArgs = 0;
-//	int argStack[MAX_NUM_OF_ARGS];
 	cons_t *argCellStack[MAX_NUM_OF_ARGS];
 	hashTable_t *table = search_symbol(ctx, cell->svalue);
 
