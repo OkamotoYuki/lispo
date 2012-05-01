@@ -102,9 +102,7 @@ hashTable_t *add_arg(lcontext_t *ctx, char *symbol)
 	if(!table) {
 		ARG_TABLE(hash) = new_argTable(ctx);;
 		table = ARG_TABLE(hash);
-		table->symbol = (char *)malloc(size + 1);
-		memcpy(table->symbol, (void *)symbol, size);
-		table->symbol[size] = '\0';
+		table->symbol = symbol;
 		return table;
 	}
 
@@ -113,9 +111,7 @@ hashTable_t *add_arg(lcontext_t *ctx, char *symbol)
 		table = table->next;
 	}
 	table = new_argTable(ctx);
-	table->symbol = (char *)malloc(size + 1);
-	memcpy(table->symbol, (void *)symbol, size);
-	table->symbol[size] = '\0';
+	table->symbol = symbol;
 	return table;
 }
 
