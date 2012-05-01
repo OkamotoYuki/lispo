@@ -130,7 +130,8 @@ struct VMCode {
 		int ivalue;
 		int index;
 		int numOfArgs;
-		VMCode *jumpTo;
+//		VMCode *jumpTo;
+		hashTable_t *jumpTo;
 	};
 };
 
@@ -222,6 +223,7 @@ extern hashTable_t *new_argTable(lcontext_t *);
 /* hash.c */
 extern hashTable_t *search_symbol(lcontext_t *, char *);
 extern hashTable_t *add_symbol(lcontext_t *, char *);
+extern hashTable_t *add_func(lcontext_t *, char *);
 extern inline void set_value(hashTable_t *, int);
 extern inline void set_func(hashTable_t *, VMCode *);
 extern hashTable_t *search_arg(lcontext_t *, char *);

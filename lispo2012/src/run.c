@@ -137,7 +137,7 @@ OpLOADA:
 
 OpCALL:
 	PUSH_CODE(code->next);
-	code = code->jumpTo;
+	code = code->jumpTo->func;
 	goto *code->VMOp;
 
 OpPOPR:

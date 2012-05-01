@@ -43,6 +43,13 @@ hashTable_t *add_symbol(lcontext_t *ctx, char *symbol)
 	return table;
 }
 
+hashTable_t *add_func(lcontext_t *ctx, char *symbol)
+{
+	hashTable_t *table = add_symbol(ctx, symbol);
+	table->otype = O_SymFUNC;
+	return table;
+}
+
 inline void set_value(hashTable_t *table, int value)
 {
 	table->otype = O_SymVAL;
@@ -51,7 +58,6 @@ inline void set_value(hashTable_t *table, int value)
 
 inline void set_func(hashTable_t *table, VMCode *startOfFunc)
 {
-	table->otype = O_SymFUNC;
 	table->func = startOfFunc;
 }
 

@@ -65,7 +65,8 @@ static void compile_stringCells(lcontext_t *ctx, cons_t *cell)
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpCALL;
 				HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CALL);
-				HEAD_OF_VM_CODE->jumpTo = table->func;
+//				HEAD_OF_VM_CODE->jumpTo = table->func;
+				HEAD_OF_VM_CODE->jumpTo = table;
 
 				HEAD_OF_VM_CODE = add_VMCode(ctx);
 				HEAD_OF_VM_CODE->otype = O_OpPOPR;
@@ -93,8 +94,9 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 	if(!cell) return;
 
 	int i = 0;
-	char *symbol, *funcName;
+	char *symbol;
 	cons_t *argCell;
+	hashTable_t *table;
 
 	switch(cell->otype) {
 		case O_START_BRACKET:
@@ -195,7 +197,8 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(FRAME);
 
 			cell = cell->cdr;
-			funcName = cell->svalue;
+			table = add_func(ctx, cell->svalue);
+			table->otype = O_SymFUNC;
 			cell = cell->cdr;
 			argCell = cell->car;
 			while(argCell) {
@@ -205,7 +208,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			}
 			cell = cell->cdr;
 			generate_VMCode(ctx, cell);
-			set_func(add_symbol(ctx, funcName), START_OF_VM_CODE);
+			set_func(table, START_OF_VM_CODE);
 			return;
 		case O_STRING:
 			compile_stringCells(ctx, cell);
