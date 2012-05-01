@@ -119,21 +119,15 @@ int parse(lcontext_t *ctx, char *pos, int size)
 				TREE_HEAD->car = new_consCell(ctx);
 				TREE_HEAD = TREE_HEAD->car;
 				TREE_HEAD->otype = O_DEFUN;
-				ctx->isFunc = 1;
 				return T;
 			}
-			if(ctx->isStartOfArg) {
+			if(TREE_HEAD->otype == O_START_BRACKET) {
 				TREE_HEAD->car = new_consCell(ctx);
 				TREE_HEAD = TREE_HEAD->car;
-				ctx->isStartOfArg = 0;
 			}
 			else {
 				TREE_HEAD->cdr = new_consCell(ctx);
 				TREE_HEAD = TREE_HEAD->cdr;
-				if(ctx->isFunc) {
-					ctx->isStartOfArg = 1;
-					ctx->isFunc = 0;
-				}
 			}
 			TREE_HEAD->otype = O_STRING;
 			TREE_HEAD->svalue = (char *)malloc(size + 1);

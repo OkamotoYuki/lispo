@@ -194,8 +194,6 @@ struct lcontext {
 	cons_t *treeHead;
 	cons_t **startBracketCellsPtrStack;
 	int startBracketCellsPtrStackPos;
-	int isFunc;
-	int isStartOfArg;
 
 	void **VMOpTable; // for VM
 	VMCode *startOfVMCode;

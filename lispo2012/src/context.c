@@ -12,8 +12,6 @@ void init_rootContext(lcontext_t *ctx)
 	ctx->treeRoot = NULL;
 	ctx->treeHead = NULL;
 	ctx->startBracketCellsPtrStackPos = -1;
-	ctx->isFunc = 0;
-	ctx->isStartOfArg = 0;
 
 	/* for code generator */
 	ctx->startOfVMCode = NULL;
