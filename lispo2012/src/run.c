@@ -31,7 +31,7 @@ data_t *run_VM(lcontext_t *ctx)
 		&&OpADD, &&OpSUB, &&OpMUL, &&OpDIV,
 		&&OpLT, &&OpGT,
 		&&OpCMP,
-		&&OpLOADA, &&OpCALL, &&OpRET,
+		&&OpLOADA, &&OpCALL, &&OpRET, &&OpPOPR,
 		&&OpEND
 	};
 
@@ -108,6 +108,8 @@ OpLOADA:
 OpCALL:
 
 OpRET:
+
+OpPOPR:
 
 OpEND:
 	return &(DATA_STACK(sp));

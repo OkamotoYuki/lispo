@@ -63,6 +63,7 @@ enum ObjectType {
 	O_OpLOADA,
 	O_OpCALL,
 	O_OpRET,
+	O_OpPOPR,
 	O_OpEND,
 
 	/* symbol */
@@ -84,6 +85,7 @@ enum VMCodeType {
 	LOADA,
 	CALL,
 	RET,
+	POPR,
 	END
 };
 
