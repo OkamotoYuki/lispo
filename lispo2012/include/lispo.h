@@ -92,7 +92,7 @@ enum VMCodeType {
 enum DataType {
 	D_INT,
 	D_BOOL,
-	D_POS,
+	D_FP,
 	D_CODE
 };
 

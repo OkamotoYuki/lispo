@@ -14,6 +14,18 @@
 	DATA_STACK(sp).value = (b);\
 } while(0)
 
+#define PUSH_FP(fp) do {\
+	sp++;\
+	DATA_STACK(sp).dtype = D_FP;\
+	DATA_STACK(sp).fp = (fp);\
+} while(0)
+
+#define PUSH_CODE(code) do {\
+	sp++;\
+	DATA_STACK(sp).dtype = D_CODE;\
+	DATA_STACK(sp).code = (code);\
+} while(0)
+
 #define POP_INT(i) do {\
 	i = DATA_STACK(sp).value;\
 	sp--;\
@@ -49,7 +61,7 @@ data_t *run_VM(lcontext_t *ctx)
 		return NULL;
 	}
 
-	int sp = -1, fp = -1;
+	int sp = -1, fp = -1, i;
 	register int r1, r2, r3;
 	VMCode *code = START_OF_VM_CODE;
 
@@ -113,18 +125,57 @@ OpCMP:
 	goto *code->VMOp;
 
 OpFRAME:
+	PUSH_FP(fp);
+	fp = sp;
+	code = code->next;
+	goto *code->VMOp;
 
 OpLOADA:
+	PUSH_INT(DATA_STACK(fp - 2 - code->index).value);
+	code = code->next;
+	goto *code->VMOp;
 
 OpCALL:
+	PUSH_CODE(code->next);
+	code = code->jumpTo;
+	goto *code->VMOp;
 
 OpPOPR:
+	switch(DATA_STACK(sp).dtype) {
+		case D_INT:
+			POP_INT(r1);
+			for(i = 0; i < code->numOfArgs; i++) {
+				POP_INT(r2);
+			}
+			PUSH_INT(r1);
+			break;
+		case D_BOOL:
+			POP_BOOL(r1);
+			for(i = 0; i < code->numOfArgs; i++) {
+				POP_INT(r2);
+			}
+			PUSH_BOOL(r1);
+			break;
+	}
+	code = code->next;
+	goto *code->VMOp;
 
 OpRET:
 	if(fp <= 0) return &(DATA_STACK(sp));
-	sp = fp;
-	POP_FP(fp);
-	POP_CODE(code);
+	switch(DATA_STACK(sp).dtype) {
+		case D_INT:
+			POP_INT(r1);
+			POP_FP(fp);
+			POP_CODE(code);
+			PUSH_INT(r1);
+			break;
+		case D_BOOL:
+			POP_BOOL(r1);
+			POP_FP(fp);
+			POP_CODE(code);
+			PUSH_BOOL(r1);
+			break;
+	}
 	goto *code->VMOp;
 }
 
