@@ -191,6 +191,7 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			generate_VMCode(ctx, cell);
 			return;
 		case O_DEFUN:
+			ctx->isDefun = 1;
 			HEAD_OF_VM_CODE = new_VMCode(ctx);
 			START_OF_VM_CODE = HEAD_OF_VM_CODE;
 			HEAD_OF_VM_CODE->otype = O_OpFRAME;

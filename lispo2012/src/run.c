@@ -68,6 +68,7 @@ data_t *run_VM(lcontext_t *ctx)
 	goto *code->VMOp;
 
 OpPUSH:
+	printf("%d\n", sp);
 	PUSH_INT(code->ivalue);
 	code = code->next;
 	goto *code->VMOp;

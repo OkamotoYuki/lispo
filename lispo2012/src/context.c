@@ -16,6 +16,9 @@ void init_rootContext(lcontext_t *ctx)
 	/* for code generator */
 	ctx->startOfVMCode = NULL;
 	ctx->headOfVMCode = NULL;
+
+	/* for VM */
+	ctx->isDefun = 0;
 }
 
 lcontext_t *new_rootContext(int argc, char **argv)

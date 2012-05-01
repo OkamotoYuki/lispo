@@ -15,8 +15,10 @@ int main(int argc, char **argv)
 		print_consTree(TREE_ROOT);
 		compile(ctx);
 		print_VMCode(START_OF_VM_CODE);
-		result = run_VM(ctx);
-		print_result(result);
+		if(!ctx->isDefun) {
+			result = run_VM(ctx);
+			print_result(result);
+		}
 		depth = 0;
 		init_rootContext(ctx);
 	}

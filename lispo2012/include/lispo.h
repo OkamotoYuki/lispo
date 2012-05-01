@@ -199,6 +199,7 @@ struct lcontext {
 	void **VMOpTable; // for VM
 	VMCode *startOfVMCode;
 	VMCode *headOfVMCode;
+	int isDefun;
 
 	data_t *dataStack; // for data stack
 };
