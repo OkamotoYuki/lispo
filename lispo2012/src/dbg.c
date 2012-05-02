@@ -61,6 +61,21 @@ void print_consTree(cons_t *head)
 			printf(">\n");
 			print_consTree(head->cdr);
 			return;
+		case O_LE:
+			print_tab();
+			printf("<=\n");
+			print_consTree(head->cdr);
+			return;
+		case O_GE:
+			print_tab();
+			printf(">=\n");
+			print_consTree(head->cdr);
+			return;
+		case O_EQ:
+			print_tab();
+			printf("=\n");
+			print_consTree(head->cdr);
+			return;
 		case O_IF:
 			print_tab();
 			printf("if\n");
