@@ -40,7 +40,6 @@ void read(lcontext_t *ctx)
 
 		while((*pos != '\0') && (*pos != '\n')) {
 			if(!ctx->bracketsCounter) {
-				printf("%c\n", *pos);
 				isSyntaxError = 1;
 				break;
 			}

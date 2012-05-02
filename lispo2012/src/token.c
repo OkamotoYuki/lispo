@@ -52,7 +52,7 @@ int tokenize(char *start)
 			break;
 	}
 
-	while(!(*end == ' ' || *end == ')' || *end == '\0')) {
+	while(!(*end == ' ' || *end == ')' || *end == '\0' || *end == '\n')) {
 		end++;
 	}
 	if(*end == '\0') return END_OF_LINE;
