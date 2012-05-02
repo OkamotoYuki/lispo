@@ -2,16 +2,10 @@
 
 #define DATA_STACK(pos) ctx->dataStack[pos]
 
-#define PUSH_INT(i) do {\
+#define PUSH(i, d) do {\
 	sp++;\
-	DATA_STACK(sp).dtype = D_INT;\
+	DATA_STACK(sp).dtype = d;\
 	DATA_STACK(sp).value = (i);\
-} while(0)
-
-#define PUSH_BOOL(b) do {\
-	sp++;\
-	DATA_STACK(sp).dtype = D_BOOL;\
-	DATA_STACK(sp).value = (b);\
 } while(0)
 
 #define PUSH_FP(fp) do {\
@@ -26,13 +20,8 @@
 	DATA_STACK(sp).code = (vmcode);\
 } while(0)
 
-#define POP_INT(i) do {\
+#define POP(i) do {\
 	i = DATA_STACK(sp).value;\
-	sp--;\
-} while(0)
-
-#define POP_BOOL(b) do {\
-	b = DATA_STACK(sp).value;\
 	sp--;\
 } while(0)
 
@@ -63,82 +52,83 @@ data_t *run_VM(lcontext_t *ctx)
 
 	int sp = -1, fp = -1, i;
 	register int r1, r2, r3;
+	DataType dtype;
 	VMCode *code = START_OF_VM_CODE;
 
 	goto *code->VMOp;
 
 OpPUSH:
-	PUSH_INT(code->ivalue);
+	PUSH(code->ivalue, D_INT);
 	code = code->next;
 	goto *code->VMOp;
 
 OpPOP:
 
 OpADD:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_INT(r1 + r2);
+	POP(r1);
+	POP(r2);
+	PUSH(r1 + r2, D_INT);
 	code = code->next;
 	goto *code->VMOp;
 
 OpSUB:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_INT(r2 - r1);
+	POP(r1);
+	POP(r2);
+	PUSH(r2 - r1, D_INT);
 	code = code->next;
 	goto *code->VMOp;
 
 OpMUL:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_INT(r1 * r2);
+	POP(r1);
+	POP(r2);
+	PUSH(r1 * r2, D_INT);
 	code = code->next;
 	goto *code->VMOp;
 
 OpDIV:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_INT(r2 / r1);
+	POP(r1);
+	POP(r2);
+	PUSH(r2 / r1, D_INT);
 	code = code->next;
 	goto *code->VMOp;
 
 OpLT:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_BOOL((r2 < r1)? T : NIL);
+	POP(r1);
+	POP(r2);
+	PUSH((r2 < r1)? T : NIL, D_BOOL);
 	code = code->next;
 	goto *code->VMOp;
 
 OpGT:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_BOOL((r2 > r1)? T : NIL);
+	POP(r1);
+	POP(r2);
+	PUSH((r2 > r1)? T : NIL, D_BOOL);
 	code = code->next;
 	goto *code->VMOp;
 
 OpLE:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_BOOL((r2 <= r1)? T : NIL);
+	POP(r1);
+	POP(r2);
+	PUSH((r2 <= r1)? T : NIL, D_BOOL);
 	code = code->next;
 	goto *code->VMOp;
 
 OpGE:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_BOOL((r2 >= r1)? T : NIL);
+	POP(r1);
+	POP(r2);
+	PUSH((r2 >= r1)? T : NIL, D_BOOL);
 	code = code->next;
 	goto *code->VMOp;
 
 OpEQ:
-	POP_INT(r1);
-	POP_INT(r2);
-	PUSH_BOOL((r2 == r1)? T : NIL);
+	POP(r1);
+	POP(r2);
+	PUSH((r2 == r1)? T : NIL, D_BOOL);
 	code = code->next;
 	goto *code->VMOp;
 
 OpCMP:
-	POP_BOOL(r1);
+	POP(r1);
 	if(r1) code = code->next;
 	else code = code->jumpTo;
 	goto *code->VMOp;
@@ -155,7 +145,7 @@ OpFRAME:
 	goto *code->VMOp;
 
 OpLOADA:
-	PUSH_INT(DATA_STACK(fp - 2 - code->index).value);
+	PUSH(DATA_STACK(fp - 2 - code->index).value, D_INT);
 	code = code->next;
 	goto *code->VMOp;
 
@@ -165,41 +155,22 @@ OpCALL:
 	goto *code->VMOp;
 
 OpPOPR:
-	switch(DATA_STACK(sp).dtype) {
-		case D_INT:
-			POP_INT(r1);
-			for(i = 0; i < code->numOfArgs; i++) {
-				POP_INT(r2);
-			}
-			PUSH_INT(r1);
-			break;
-		case D_BOOL:
-			POP_BOOL(r1);
-			for(i = 0; i < code->numOfArgs; i++) {
-				POP_INT(r2);
-			}
-			PUSH_BOOL(r1);
-			break;
+	dtype = DATA_STACK(sp).dtype;
+	POP(r1);
+	for(i = 0; i < code->numOfArgs; i++) {
+		POP(r2);
 	}
+	PUSH(r1, dtype);
 	code = code->next;
 	goto *code->VMOp;
 
 OpRET:
 	if(fp <= 0) return &(DATA_STACK(sp));
-	switch(DATA_STACK(sp).dtype) {
-		case D_INT:
-			POP_INT(r1);
+	dtype = DATA_STACK(sp).dtype;
+			POP(r1);
 			POP_FP(fp);
 			POP_CODE(code);
-			PUSH_INT(r1);
-			break;
-		case D_BOOL:
-			POP_BOOL(r1);
-			POP_FP(fp);
-			POP_CODE(code);
-			PUSH_BOOL(r1);
-			break;
-	}
+	PUSH(r1, dtype);
 	goto *code->VMOp;
 }
 
