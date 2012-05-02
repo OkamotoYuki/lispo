@@ -51,7 +51,7 @@ data_t *run_VM(lcontext_t *ctx)
 	}
 
 	int sp = -1, fp = -1, i;
-	register int r1, r2, r3;
+	register int r1, r2;
 	DataType dtype;
 	VMCode *code = START_OF_VM_CODE;
 
