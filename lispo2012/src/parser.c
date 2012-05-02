@@ -78,6 +78,10 @@ int parse(lcontext_t *ctx, char *pos, int size)
 				TREE_HEAD = TREE_HEAD->car;
 				TREE_HEAD->otype = O_GT;
 				return T;
+			case '=':
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_EQ;
 			default:
 				break;
 		}
@@ -104,6 +108,16 @@ int parse(lcontext_t *ctx, char *pos, int size)
 				TREE_HEAD->otype = O_NUM;
 				TREE_HEAD->ivalue = ival;
 				return T;
+			}
+			else if(size == 2 && !strncmp(str, "<=", 2)) {
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_LE;
+			}
+			else if(size == 2 && !strncmp(str, ">=", 2)) {
+				TREE_HEAD->car = new_consCell(ctx);
+				TREE_HEAD = TREE_HEAD->car;
+				TREE_HEAD->otype = O_GE;
 			}
 			else if(size == 2 && !strncmp(str, "if", 2)) {
 				TREE_HEAD->car = new_consCell(ctx);

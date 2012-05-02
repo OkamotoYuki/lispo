@@ -173,16 +173,36 @@ static void generate_VMCode(lcontext_t *ctx, cons_t *cell)
 			HEAD_OF_VM_CODE->otype = O_OpGT;
 			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(GT);
 			return;
-//		case O_IF:
-//			for(; i < 3; i++) {
-//				cell = cell->cdr;
-//				generate_VMCode(ctx, cell);
-//			}
-//
-//			HEAD_OF_VM_CODE = add_VMCode(ctx);
-//			HEAD_OF_VM_CODE->otype = O_OpCMP;
-//			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(CMP);
-//			return;
+		case O_LE:
+			for(; i < 2; i++) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+			}
+
+			HEAD_OF_VM_CODE = add_VMCode(ctx);
+			HEAD_OF_VM_CODE->otype = O_OpLE;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(LE);
+			return;
+		case O_GE:
+			for(; i < 2; i++) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+			}
+
+			HEAD_OF_VM_CODE = add_VMCode(ctx);
+			HEAD_OF_VM_CODE->otype = O_OpGE;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(GE);
+			return;
+		case O_EQ:
+			for(; i < 2; i++) {
+				cell = cell->cdr;
+				generate_VMCode(ctx, cell);
+			}
+
+			HEAD_OF_VM_CODE = add_VMCode(ctx);
+			HEAD_OF_VM_CODE->otype = O_OpEQ;
+			HEAD_OF_VM_CODE->VMOp = VM_OP_TABLE(EQ);
+			return;
 		case O_IF:
 			cell = cell->cdr;
 			generate_VMCode(ctx, cell);

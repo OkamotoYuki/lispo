@@ -51,7 +51,7 @@ data_t *run_VM(lcontext_t *ctx)
 	static void *VMOpTable[] = {
 		&&OpPUSH, &&OpPOP,
 		&&OpADD, &&OpSUB, &&OpMUL, &&OpDIV,
-		&&OpLT, &&OpGT,
+		&&OpLT, &&OpGT, &&OpLE, &&OpGE, &&OpEQ,
 		&&OpCMP, &&OpJMP,
 		&&OpFRAME, &&OpLOADA, &&OpCALL, &&OpPOPR, &&OpRET
 	};
@@ -113,6 +113,27 @@ OpGT:
 	POP_INT(r1);
 	POP_INT(r2);
 	PUSH_BOOL((r2 > r1)? T : NIL);
+	code = code->next;
+	goto *code->VMOp;
+
+OpLE:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_BOOL((r2 <= r1)? T : NIL);
+	code = code->next;
+	goto *code->VMOp;
+
+OpGE:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_BOOL((r2 >= r1)? T : NIL);
+	code = code->next;
+	goto *code->VMOp;
+
+OpEQ:
+	POP_INT(r1);
+	POP_INT(r2);
+	PUSH_BOOL((r2 == r1)? T : NIL);
 	code = code->next;
 	goto *code->VMOp;
 
