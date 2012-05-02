@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 			result = run_VM(ctx);
 			print_result(result);
 		}
-		depth = 0;
+//		depth = 0;
 		init_rootContext(ctx);
 	}
 

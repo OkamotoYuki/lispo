@@ -121,6 +121,18 @@ void print_VMCode(VMCode *code)
 			printf("GT->");
 			print_VMCode(code->next);
 			return;
+		case O_OpLE:
+			printf("LE->");
+			print_VMCode(code->next);
+			return;
+		case O_OpGE:
+			printf("GE->");
+			print_VMCode(code->next);
+			return;
+		case O_OpEQ:
+			printf("EQ->");
+			print_VMCode(code->next);
+			return;
 		case O_OpCMP:
 			printf("CMP->");
 			print_VMCode(code->next);
