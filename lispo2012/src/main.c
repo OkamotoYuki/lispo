@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 	data_t *result;
 
 	while(1) {
-		read(ctx);
+		read_line(ctx);
 //		print_consTree(TREE_ROOT);
 		compile(ctx);
 //		print_VMCode(START_OF_VM_CODE);

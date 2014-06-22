@@ -245,7 +245,7 @@ extern hashTable_t *add_arg(lcontext_t *, char *);
 extern inline void set_arg(hashTable_t *, int);
 
 /* read.c */
-extern void read(lcontext_t *);
+extern void read_line(lcontext_t *);
 
 /* token.c */
 extern char *skip_space(char *);

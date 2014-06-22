@@ -3,7 +3,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
-void read(lcontext_t *ctx)
+void read_line(lcontext_t *ctx)
 {
 	int isFirstLine = 1, isSyntaxError = 0;
 	char *line, *pos;
